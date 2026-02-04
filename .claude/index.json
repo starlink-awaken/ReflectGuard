@@ -1,0 +1,271 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-02-04T09:23:47Z",
+  "project": {
+    "name": "PRISM-Gateway",
+    "description": "统一的 7 维度复盘和 Gateway 系统",
+    "path": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs",
+    "type": "documentation"
+  },
+  "scan_summary": {
+    "total_files": 38,
+    "scanned_files": 38,
+    "coverage_percentage": 100,
+    "total_size": "~350KB",
+    "truncated": false
+  },
+  "modules": [
+    {
+      "path": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs",
+      "name": "root",
+      "type": "root",
+      "description": "PRISM-Gateway 项目文档根目录",
+      "files_count": 3,
+      "key_files": [
+        "README.md",
+        "INDEX.md",
+        "CLAUDE.md"
+      ]
+    },
+    {
+      "path": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs/reports",
+      "name": "reports",
+      "type": "module",
+      "description": "项目报告和复盘",
+      "files_count": 11,
+      "key_files": [
+        "PHASE1_MVP_DEEP_RETROSPECTIVE_REPORT.md",
+        "PHASE2_ARCHITECTURE.md",
+        "WEEK2-3_COMPLETION_REPORT.md",
+        "PHASE2_PREPARATION_WEEK_COMPLETION_REPORT.md",
+        "TASK143_MCP_SERVER_COMPLETION_REPORT.md"
+      ],
+      "subsections": {
+        "phase1_reports": 3,
+        "phase2_reports": 4,
+        "verification_reports": 3,
+        "delivery_reports": 1
+      }
+    },
+    {
+      "path": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs/docs",
+      "name": "docs",
+      "type": "module",
+      "description": "使用文档和指南",
+      "files_count": 8,
+      "key_files": [
+        "MIGRATION_GUIDE.md",
+        "DATA_MIGRATION_PLAN.md",
+        "MIGRATION_ROLLBACK_PLAN.md",
+        "MIGRATION_VALIDATION_PLAN.md",
+        "mcp-server.md",
+        "FILE_LOCK_USAGE.md",
+        "PROJECT_PROGRESS.md"
+      ],
+      "subsections": {
+        "migration_docs": 5,
+        "usage_docs": 3,
+        "task_reports": 1
+      }
+    },
+    {
+      "path": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs/api",
+      "name": "api",
+      "type": "module",
+      "description": "API 文档",
+      "files_count": 10,
+      "key_files": [
+        "README.md",
+        "GatewayGuard.md",
+        "MemoryStore.md",
+        "DataExtractor.md",
+        "RetrospectiveCore.md",
+        "QuickReview.md"
+      ],
+      "subsections": {
+        "core_apis": 6,
+        "pattern_matchers": 3,
+        "sidebar": 1
+      }
+    }
+  ],
+  "key_concepts": {
+    "prism_framework": {
+      "description": "7 维度复盘框架",
+      "dimensions": [
+        "Principles (原则)",
+        "Patterns (模式)",
+        "Benchmarks (基准)",
+        "Traps (陷阱)",
+        "Success (成功)",
+        "Tools (工具)",
+        "Data (数据)"
+      ]
+    },
+    "memory_architecture": {
+      "description": "三层 MEMORY 架构",
+      "layers": [
+        "Level-1 Hot: 实时查询 (<100ms)",
+        "Level-2 Warm: 复盘历史 (可读写)",
+        "Level-3 Cold: 知识库 (只读)"
+      ]
+    },
+    "gateway_checking": {
+      "description": "三层检查架构",
+      "layers": [
+        "Layer 1: Principle checking (MANDATORY)",
+        "Layer 2: Pattern matching (WARNING)",
+        "Layer 3: Trap detection (ADVISORY)"
+      ]
+    },
+    "shadow_migration": {
+      "description": "Shadow Migration Pattern",
+      "features": [
+        "Phase 1 数据永不修改",
+        "备份在变更前创建",
+        "Phase 2 与 Phase 1 共存",
+        "回滚随时可用"
+      ]
+    }
+  },
+  "tech_stack": {
+    "runtime": "Bun >=1.0",
+    "language": "TypeScript 5.3+",
+    "mcp_sdk": "@modelcontextprotocol/sdk-server",
+    "http_server": "Hono",
+    "testing": "Bun Test",
+    "logging": "pino",
+    "cli": "Commander 14.x"
+  },
+  "project_phases": [
+    {
+      "phase": "Phase 1 MVP",
+      "status": "completed",
+      "completion_date": "2026-02-03",
+      "key_metrics": {
+        "development_time": "6 hours",
+        "test_coverage": "85%",
+        "test_count": 203,
+        "performance_improvement": "10-30000x",
+        "score": "9.5/10"
+      }
+    },
+    {
+      "phase": "Phase 2.0 准备周",
+      "status": "completed",
+      "completion_date": "2026-02-03"
+    },
+    {
+      "phase": "Phase 2 Week 2-3",
+      "status": "completed",
+      "completion_date": "2026-02-03",
+      "key_metrics": {
+        "test_count": 357,
+        "test_pass_rate": "100%",
+        "mcp_server_tests": 49,
+        "filelock_tests": 45,
+        "migration_tests": 43,
+        "integration_tests": 220
+      }
+    },
+    {
+      "phase": "Phase 2 Week 4-5",
+      "status": "pending",
+      "focus": "Analytics + API"
+    },
+    {
+      "phase": "Phase 2 Week 6-7",
+      "status": "pending",
+      "focus": "Web UI"
+    },
+    {
+      "phase": "Phase 2 Week 8-9",
+      "status": "pending",
+      "focus": "Scheduler + Backup"
+    },
+    {
+      "phase": "Phase 2 Week 10-11",
+      "status": "pending",
+      "focus": "Production Ready"
+    }
+  ],
+  "important_paths": {
+    "project_root": "~/.prism-gateway/",
+    "documentation": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs/",
+    "knowledge_base": "~/.claude/MEMORY/LEARNING/Gateway/",
+    "phase1_data": {
+      "hot": "~/.prism-gateway/level-1-hot/",
+      "warm": "~/.prism-gateway/level-2-warm/",
+      "cold": "~/.prism-gateway/level-3-cold/"
+    },
+    "phase2_data": {
+      "analytics": "~/.prism-gateway/analytics/",
+      "cache": "~/.prism-gateway/cache/",
+      "config": "~/.prism-gateway/config/",
+      "logs": "~/.prism-gateway/logs/"
+    }
+  },
+  "performance_benchmarks": {
+    "gateway_check": {
+      "target": "<1000ms",
+      "actual": "<100ms",
+      "achievement": "1000%"
+    },
+    "quick_retrospective": {
+      "target": "<5min",
+      "actual": "<5min",
+      "achievement": "100%"
+    },
+    "memory_read_write": {
+      "target": "<100ms",
+      "actual": "<100ms",
+      "achievement": "100%"
+    },
+    "mcp_response": {
+      "target": "<100ms",
+      "actual": "<20ms",
+      "achievement": "500%"
+    },
+    "filelock_acquire": {
+      "target": "<100ms",
+      "actual": "<50ms",
+      "achievement": "200%"
+    },
+    "migration_1000_records": {
+      "target": "<5min",
+      "actual": "<0.01s",
+      "achievement": "29999%"
+    }
+  },
+  "ignore_patterns": [
+    ".DS_Store",
+    "*.log",
+    "node_modules/",
+    "dist/",
+    ".cache/",
+    ".vscode/",
+    ".idea/",
+    "*.swp",
+    "*.swo",
+    "*~",
+    ".git/**"
+  ],
+  "gaps": [],
+  "next_steps": [
+    "保持文档与代码同步更新",
+    "定期审查和优化文档结构",
+    "根据用户反馈改进文档",
+    "添加更多使用示例和最佳实践"
+  ],
+  "metadata": {
+    "scan_strategy": "full_inventory",
+    "scan_intensity": "module_priority",
+    "tools_used": [
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "documented_modules": 3,
+    "total_documented_files": 38
+  }
+}
