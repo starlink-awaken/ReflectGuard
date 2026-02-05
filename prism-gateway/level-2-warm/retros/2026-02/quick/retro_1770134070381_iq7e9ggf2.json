@@ -1,0 +1,17 @@
+{
+  "id": "retro_1770134070381_iq7e9ggf2",
+  "timestamp": "2026-02-03T15:54:30.381Z",
+  "type": "quick",
+  "project": "report-test",
+  "duration": 1,
+  "summary": "项目: report-test; 上下文: 生成测试报告; 原则违规: 1个; 成功要素: 1个",
+  "lessons": [
+    "持续改进",
+    "团队协作"
+  ],
+  "improvements": [
+    "流程优化",
+    "质量提升"
+  ],
+  "violations": []
+}

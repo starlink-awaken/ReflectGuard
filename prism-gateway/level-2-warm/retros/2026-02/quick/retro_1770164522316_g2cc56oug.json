@@ -1,0 +1,17 @@
+{
+  "id": "retro_1770164522316_g2cc56oug",
+  "timestamp": "2026-02-04T00:22:02.316Z",
+  "type": "quick",
+  "project": "test-project",
+  "duration": 1,
+  "summary": "项目: test-project; 上下文: 完成用户认证功能开发; 原则违规: 2个; 成功要素: 1个",
+  "lessons": [
+    "持续改进",
+    "团队协作"
+  ],
+  "improvements": [
+    "流程优化",
+    "质量提升"
+  ],
+  "violations": []
+}

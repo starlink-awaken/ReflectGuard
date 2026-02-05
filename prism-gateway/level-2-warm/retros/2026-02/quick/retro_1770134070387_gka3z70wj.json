@@ -1,0 +1,17 @@
+{
+  "id": "retro_1770134070387_gka3z70wj",
+  "timestamp": "2026-02-03T15:54:30.387Z",
+  "type": "quick",
+  "project": "cli-test",
+  "duration": 0,
+  "summary": "项目: cli-test; 上下文: CLI测试; 原则违规: 1个; 成功要素: 1个",
+  "lessons": [
+    "持续改进",
+    "团队协作"
+  ],
+  "improvements": [
+    "流程优化",
+    "质量提升"
+  ],
+  "violations": []
+}

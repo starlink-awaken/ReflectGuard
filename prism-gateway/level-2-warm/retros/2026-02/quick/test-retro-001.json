@@ -1,0 +1,14 @@
+{
+  "id": "test-retro-001",
+  "timestamp": "2026-02-04T00:23:37.813Z",
+  "type": "quick",
+  "project": "测试项目",
+  "duration": 5,
+  "summary": "测试复盘",
+  "lessons": [
+    "测试教训"
+  ],
+  "improvements": [
+    "测试改进"
+  ]
+}

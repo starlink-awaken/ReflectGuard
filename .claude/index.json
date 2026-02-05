@@ -1,57 +1,71 @@
 {
-  "version": "1.0.0",
-  "generated_at": "2026-02-04T09:23:47Z",
+  "version": "1.1.0",
+  "generated_at": "2026-02-04T22:47:18Z",
   "project": {
     "name": "PRISM-Gateway",
     "description": "统一的 7 维度复盘和 Gateway 系统",
-    "path": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs",
-    "type": "documentation"
+    "path": "/Volumes/Model/Workspace/Agent/prism-gateway-docs",
+    "type": "documentation",
+    "repository": "https://github.com/prism-gateway/prism-gateway"
   },
   "scan_summary": {
-    "total_files": 38,
-    "scanned_files": 38,
+    "total_files": 54,
+    "scanned_files": 54,
     "coverage_percentage": 100,
-    "total_size": "~350KB",
-    "truncated": false
+    "total_size": "~450KB",
+    "truncated": false,
+    "last_scan": "2026-02-04T22:47:18Z"
   },
   "modules": [
     {
-      "path": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs",
+      "path": "/Volumes/Model/Workspace/Agent/prism-gateway-docs",
       "name": "root",
       "type": "root",
       "description": "PRISM-Gateway 项目文档根目录",
-      "files_count": 3,
+      "files_count": 5,
       "key_files": [
         "README.md",
         "INDEX.md",
-        "CLAUDE.md"
+        "CLAUDE.md",
+        "MEMORY_CLEANUP_REPORT.md",
+        ".gitignore"
       ]
     },
     {
-      "path": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs/reports",
+      "path": "/Volumes/Model/Workspace/Agent/prism-gateway-docs/reports",
       "name": "reports",
       "type": "module",
-      "description": "项目报告和复盘",
-      "files_count": 11,
+      "description": "项目报告、复盘和风险监控框架",
+      "files_count": 15,
       "key_files": [
         "PHASE1_MVP_DEEP_RETROSPECTIVE_REPORT.md",
         "PHASE2_ARCHITECTURE.md",
         "WEEK2-3_COMPLETION_REPORT.md",
+        "WEEK4-5_RISK_MONITORING_FRAMEWORK.md",
+        "WEEK4-5_DAILY_RISK_CHECKLIST.md",
+        "WEEK4-5_EMERGENCY_RESPONSE_PLAN.md",
+        "WEEK4-5_QUALITY_MONITORING_DASHBOARD.md",
         "PHASE2_PREPARATION_WEEK_COMPLETION_REPORT.md",
         "TASK143_MCP_SERVER_COMPLETION_REPORT.md"
       ],
       "subsections": {
         "phase1_reports": 3,
         "phase2_reports": 4,
+        "week4_5_risk_framework": 4,
         "verification_reports": 3,
         "delivery_reports": 1
-      }
+      },
+      "highlights": [
+        "Week 4-5 风险监控框架（4份新文档）",
+        "Phase 2 架构设计（37KB）",
+        "Week 2-3 完成报告（357个测试）"
+      ]
     },
     {
-      "path": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs/docs",
+      "path": "/Volumes/Model/Workspace/Agent/prism-gateway-docs/docs",
       "name": "docs",
       "type": "module",
-      "description": "使用文档和指南",
+      "description": "使用文档、数据迁移指南和技术文档",
       "files_count": 8,
       "key_files": [
         "MIGRATION_GUIDE.md",
@@ -60,19 +74,24 @@
         "MIGRATION_VALIDATION_PLAN.md",
         "mcp-server.md",
         "FILE_LOCK_USAGE.md",
-        "PROJECT_PROGRESS.md"
+        "PROJECT_PROGRESS.md",
+        "TASK144_COMPLETION_REPORT.md"
       ],
       "subsections": {
         "migration_docs": 5,
-        "usage_docs": 3,
-        "task_reports": 1
-      }
+        "usage_docs": 3
+      },
+      "highlights": [
+        "Shadow Migration Pattern 设计",
+        "MCP Server 集成文档",
+        "跨平台文件锁实现"
+      ]
     },
     {
-      "path": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs/api",
+      "path": "/Volumes/Model/Workspace/Agent/prism-gateway-docs/api",
       "name": "api",
       "type": "module",
-      "description": "API 文档",
+      "description": "完整 API 文档，包含核心类和接口定义",
       "files_count": 10,
       "key_files": [
         "README.md",
@@ -80,13 +99,67 @@
         "MemoryStore.md",
         "DataExtractor.md",
         "RetrospectiveCore.md",
-        "QuickReview.md"
+        "QuickReview.md",
+        "PatternMatcher.md",
+        "PrincipleChecker.md",
+        "TrapDetector.md"
       ],
       "subsections": {
         "core_apis": 6,
         "pattern_matchers": 3,
         "sidebar": 1
-      }
+      },
+      "highlights": [
+        "三层 Gateway 检查机制",
+        "三层 MEMORY 架构 API",
+        "7 维度数据提取接口"
+      ]
+    },
+    {
+      "path": "/Volumes/Model/Workspace/Agent/prism-gateway-docs/scripts",
+      "name": "scripts",
+      "type": "module",
+      "description": "重构执行脚本，遵循 Shadow Migration Pattern",
+      "files_count": 8,
+      "key_files": [
+        "00-prepare.sh",
+        "01-integrate-configs.sh",
+        "02-move-reports.sh",
+        "03-organize-data.sh",
+        "04-integrate-docs.sh",
+        "05-update-imports.sh",
+        "06-verify.sh",
+        "07-cleanup.sh",
+        "rollback.sh",
+        "README.md",
+        "refactor-plan.md",
+        "EXECUTION_CHECKLIST.md"
+      ],
+      "subsections": {
+        "refactor_scripts": 8,
+        "documentation": 3
+      },
+      "highlights": [
+        "零停机迁移脚本",
+        "完整回滚支持",
+        "分阶段验证机制"
+      ]
+    },
+    {
+      "path": "/Volumes/Model/Workspace/Agent/prism-gateway-docs/prism-gateway",
+      "name": "prism-gateway",
+      "type": "subproject",
+      "description": "PRISM-Gateway 主项目代码（包含 node_modules）",
+      "files_count": 0,
+      "key_files": [
+        "README.md",
+        "package.json",
+        "tsconfig.json",
+        "typedoc.json",
+        "hooks.config.json"
+      ],
+      "status": "excluded_from_scan",
+      "reason": "主项目代码，使用独立仓库管理"
     }
   ],
   "key_concepts": {
@@ -125,6 +198,15 @@
         "备份在变更前创建",
         "Phase 2 与 Phase 1 共存",
         "回滚随时可用"
+      ]
+    },
+    "risk_monitoring": {
+      "description": "Week 4-5 持续风险监控框架",
+      "components": [
+        "每日风险检查清单（Pentester/Architect/QATester/Engineer）",
+        "应急响应预案（P0/P1/P2/P3 级别）",
+        "质量指标监控看板",
+        "STRIDE 威胁建模"
       ]
     }
   },
@@ -170,8 +252,9 @@
     },
     {
       "phase": "Phase 2 Week 4-5",
-      "status": "pending",
-      "focus": "Analytics + API"
+      "status": "in_progress",
+      "focus": "Analytics + API",
+      "risk_framework_ready": true
     },
     {
       "phase": "Phase 2 Week 6-7",
@@ -191,7 +274,7 @@
   ],
   "important_paths": {
     "project_root": "~/.prism-gateway/",
-    "documentation": "/Users/xiamingxing/Workspace/Skills/prism-gateway-docs/",
+    "documentation": "/Volumes/Model/Workspace/Agent/prism-gateway-docs/",
     "knowledge_base": "~/.claude/MEMORY/LEARNING/Gateway/",
     "phase1_data": {
       "hot": "~/.prism-gateway/level-1-hot/",
@@ -255,7 +338,21 @@
     "保持文档与代码同步更新",
     "定期审查和优化文档结构",
     "根据用户反馈改进文档",
-    "添加更多使用示例和最佳实践"
+    "添加更多使用示例和最佳实践",
+    "完成 Week 4-5 Analytics + API 开发",
+    "实施持续风险监控框架"
+  ],
+  "recent_updates": [
+    {
+      "date": "2026-02-04",
+      "changes": [
+        "新增 Week 4-5 风险监控框架（4份文档）",
+        "新增 scripts/ 重构脚本系统（8个脚本）",
+        "新增 MEMORY_CLEANUP_REPORT.md",
+        "更新根级 CLAUDE.md 文档",
+        "优化模块结构图，增加 scripts 和 prism-gateway 节点"
+      ]
+    }
   ],
   "metadata": {
     "scan_strategy": "full_inventory",
@@ -265,7 +362,9 @@
       "Glob",
       "Grep"
     ],
-    "documented_modules": 3,
-    "total_documented_files": 38
+    "documented_modules": 5,
+    "total_documented_files": 54,
+    "documentation_coverage": "100%",
+    "last_full_scan": "2026-02-04T22:47:18Z"
   }
 }

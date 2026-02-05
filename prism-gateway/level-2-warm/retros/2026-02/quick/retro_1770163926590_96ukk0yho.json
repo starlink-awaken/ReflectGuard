@@ -1,0 +1,17 @@
+{
+  "id": "retro_1770163926590_96ukk0yho",
+  "timestamp": "2026-02-04T00:12:06.590Z",
+  "type": "quick",
+  "project": "dimension-report-test",
+  "duration": 1,
+  "summary": "项目: dimension-report-test; 上下文: 测试7维度报告; 原则违规: 1个; 成功要素: 1个",
+  "lessons": [
+    "持续改进",
+    "团队协作"
+  ],
+  "improvements": [
+    "流程优化",
+    "质量提升"
+  ],
+  "violations": []
+}

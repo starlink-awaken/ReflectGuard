@@ -1,0 +1,14 @@
+{
+  "id": "test_retro_e2e_1770164372231",
+  "timestamp": "2026-02-04T00:19:32.231Z",
+  "type": "quick",
+  "project": "e2e-test-project",
+  "duration": 1000,
+  "summary": "E2E测试复盘记录",
+  "lessons": [
+    "测试教训1"
+  ],
+  "improvements": [
+    "改进点1"
+  ]
+}

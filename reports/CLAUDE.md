@@ -9,6 +9,7 @@
 ### 2026-02-04
 - 初始化模块文档
 - 完成报告文件扫描和分类
+- 新增 Week 4-5 持续风险监控框架文档（4份）
 
 ---
 
@@ -37,6 +38,10 @@ reports/
 │   ├── PHASE2_ARCHITECTURE.md                  # Phase 2 系统架构设计（37KB）
 │   ├── PHASE2_PREPARATION_WEEK_COMPLETION_REPORT.md # Phase 2.0 准备周报告
 │   ├── WEEK2-3_COMPLETION_REPORT.md           # Week 2-3 完成报告
+│   ├── WEEK4-5_RISK_MONITORING_FRAMEWORK.md   # Week 4-5 风险监控框架 ⭐ NEW
+│   ├── WEEK4-5_DAILY_RISK_CHECKLIST.md        # Week 4-5 每日风险检查清单 ⭐ NEW
+│   ├── WEEK4-5_EMERGENCY_RESPONSE_PLAN.md     # Week 4-5 应急响应预案 ⭐ NEW
+│   ├── WEEK4-5_QUALITY_MONITORING_DASHBOARD.md # Week 4-5 质量指标监控看板 ⭐ NEW
 │   └── TASK143_MCP_SERVER_COMPLETION_REPORT.md # MCP Server 实现报告
 │
 ├── 综合报告
@@ -203,7 +208,54 @@ cat reports/WEEK2-3_COMPLETION_REPORT.md
 
 ## 相关文件清单
 
-### 报告文件（11 个）
+### Week 4-5 风险监控文档（新增）⭐
+
+#### WEEK4-5_RISK_MONITORING_FRAMEWORK.md
+- **大小：** 24KB
+- **内容：** 持续风险监控框架总览
+- **核心内容：**
+  - 每日风险评估框架（前/中/后检查）
+  - 威胁建模（STRIDE方法）
+  - 应急响应流程概述
+  - 质量指标监控概述
+  - 风险看板设计
+
+#### WEEK4-5_DAILY_RISK_CHECKLIST.md
+- **大小：** 7.2KB
+- **内容：** 每日风险检查清单模板
+- **使用场景：** 每日晨会/任务启动前
+- **核心内容：**
+  - 任务前安全检查（Pentester）
+  - 任务前性能检查（Architect）
+  - 任务前质量检查（QATester）
+  - 任务前集成检查（Engineer）
+  - 风险评级和决策流程
+
+#### WEEK4-5_EMERGENCY_RESPONSE_PLAN.md
+- **大小：** 16KB
+- **内容：** 应急响应预案详解
+- **核心场景：**
+  - 测试失败率 >10%
+  - 发现严重安全漏洞
+  - 性能不达标
+  - 数据一致性问题
+- **核心内容：**
+  - 响应级别定义（P0/P1/P2/P3）
+  - 通用响应流程
+  - 通信协议
+  - 恢复验证标准
+
+#### WEEK4-5_QUALITY_MONITORING_DASHBOARD.md
+- **大小：** 25KB
+- **内容：** 质量指标监控看板设计
+- **核心内容：**
+  - 指标定义（测试/代码/性能/安全/进度）
+  - 数据采集脚本
+  - CLI 界面设计
+  - 告警规则配置
+  - 实施脚本示例
+
+### 报告文件（15 个）
 
 **Phase 1 报告：**
 - `PHASE1_MVP_COMPLETION_REPORT.md`
@@ -235,6 +287,7 @@ cat reports/WEEK2-3_COMPLETION_REPORT.md
 | Phase 2 架构设计 | 2026-02-03 | ✅ | PHASE2_ARCHITECTURE.md |
 | Phase 2.0 准备周 | 2026-02-03 | ✅ | PHASE2_PREPARATION_WEEK_COMPLETION_REPORT.md |
 | Week 2-3 实施 | 2026-02-03 | ✅ | WEEK2-3_COMPLETION_REPORT.md |
+| Week 4-5 风险框架 | 2026-02-04 | ✅ | WEEK4-5_RISK_MONITORING_FRAMEWORK.md |
 
 ---
 

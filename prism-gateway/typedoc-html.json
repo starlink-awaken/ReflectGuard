@@ -1,0 +1,33 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "src/index.ts",
+    "src/core/GatewayGuard.ts",
+    "src/core/MemoryStore.ts",
+    "src/core/DataExtractor.ts",
+    "src/core/RetrospectiveCore.ts",
+    "src/core/QuickReview.ts",
+    "src/core/PatternMatcher.ts",
+    "src/core/PrincipleChecker.ts",
+    "src/core/TrapDetector.ts",
+    "src/types/index.ts",
+    "src/types/checks.ts"
+  ],
+  "out": "docs/api",
+  "name": "PRISM-Gateway API Documentation",
+  "exclude": [
+    "**/tests/**",
+    "**/test/**",
+    "**/*.test.ts",
+    "node_modules/**",
+    "dist/**"
+  ],
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "excludeInternal": true,
+  "categorizeByGroup": true,
+  "sort": ["source-order"],
+  "hideGenerator": false,
+  "includeVersion": true,
+  "version": "1.0.0"
+}

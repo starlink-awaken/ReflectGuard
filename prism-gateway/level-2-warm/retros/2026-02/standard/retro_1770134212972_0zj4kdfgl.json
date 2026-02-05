@@ -1,0 +1,17 @@
+{
+  "id": "retro_1770134212972_0zj4kdfgl",
+  "timestamp": "2026-02-03T15:56:52.972Z",
+  "type": "standard",
+  "project": "test-project-e2e",
+  "duration": 0,
+  "summary": "成功要素: 0个; 失败原因: 0个; 学到的教训: 2个; 行动项: 2个",
+  "lessons": [
+    "持续改进",
+    "团队协作"
+  ],
+  "improvements": [
+    "流程优化",
+    "质量提升"
+  ],
+  "violations": []
+}

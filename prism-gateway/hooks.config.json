@@ -1,0 +1,43 @@
+{
+  "enabled": true,
+  "hooks": {
+    "session_start": {
+      "enabled": true,
+      "loadProjectState": true,
+      "checkHistoricalViolations": true,
+      "maxHistoricalLookback": 7,
+      "description": "在会话开始时加载项目状态并检查历史违规记录"
+    },
+    "format_reminder": {
+      "enabled": true,
+      "performIntentCheck": true,
+      "checkTimeout": 500,
+      "blockOnHardViolation": false,
+      "maxSuggestions": 5,
+      "description": "在每次响应前检查任务意图，提供Gateway检查和建议"
+    },
+    "stop": {
+      "enabled": true,
+      "autoRetrospective": true,
+      "retroType": "quick",
+      "minDuration": 60000,
+      "saveLearnings": true,
+      "description": "在会话结束时触发复盘，保存学习要点"
+    }
+  },
+  "performance": {
+    "maxExecutionTime": 1000,
+    "asyncExecution": false,
+    "retryOnFailure": false,
+    "maxRetries": 1
+  },
+  "description": "PRISM-Gateway Hook系统配置文件",
+  "version": "1.0.0",
+  "notes": [
+    "session_start: 会话开始时触发，加载项目状态",
+    "format_reminder: 每次响应前触发，检查任务意图",
+    "stop: 会话结束时触发，执行复盘",
+    "retroType: quick (5分钟) | standard (25分钟) | deep (60分钟)",
+    "minDuration: 最小会话时长（毫秒）才触发复盘"
+  ]
+}

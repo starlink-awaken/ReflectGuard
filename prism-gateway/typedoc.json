@@ -1,0 +1,67 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "src/index.ts",
+    "src/core/GatewayGuard.ts",
+    "src/core/MemoryStore.ts",
+    "src/core/DataExtractor.ts",
+    "src/core/RetrospectiveCore.ts",
+    "src/core/QuickReview.ts",
+    "src/core/PatternMatcher.ts",
+    "src/core/PrincipleChecker.ts",
+    "src/types/index.ts"
+  ],
+  "out": "docs/api",
+  "plugin": ["typedoc-plugin-markdown"],
+  "theme": "markdown",
+  "readme": "README.md",
+  "name": "PRISM-Gateway API Documentation",
+  "exclude": [
+    "**/tests/**",
+    "**/test/**",
+    "**/*.test.ts",
+    "node_modules/**",
+    "dist/**"
+  ],
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "excludeInternal": true,
+  "categorizeByGroup": true,
+  "sort": ["source-order"],
+  "kindSortOrder": [
+    "Module",
+    "Namespace",
+    "Enum",
+    "EnumMember",
+    "Class",
+    "Interface",
+    "TypeAlias",
+    "Constructor",
+    "Property",
+    "Method",
+    "Function",
+    "Variable"
+  ],
+  "defaultCategory": "Other",
+  "categoryOrder": [
+    "Core",
+    "Types",
+    "Classes",
+    "Interfaces",
+    "Enums",
+    "Functions",
+    "Variables",
+    "Other"
+  ],
+  "hideGenerator": true,
+  "gitRevision": "main",
+  "includeVersion": true,
+  "version": "1.0.0",
+  "hideBreadcrumbs": true,
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "commentStyle": "jsdoc",
+  "logLevel": "Info"
+}

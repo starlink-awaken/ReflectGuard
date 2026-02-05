@@ -1,0 +1,17 @@
+{
+  "id": "retro_1770164423974_6bnnjcnti",
+  "timestamp": "2026-02-04T00:20:23.974Z",
+  "type": "quick",
+  "project": "json-test",
+  "duration": 1,
+  "summary": "项目: json-test; 上下文: JSON输出测试; 原则违规: 1个; 成功要素: 1个",
+  "lessons": [
+    "持续改进",
+    "团队协作"
+  ],
+  "improvements": [
+    "流程优化",
+    "质量提升"
+  ],
+  "violations": []
+}

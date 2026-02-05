@@ -1,0 +1,17 @@
+{
+  "id": "retro_1770133992936_625oldvw1",
+  "timestamp": "2026-02-03T15:53:12.936Z",
+  "type": "quick",
+  "project": "demo-project-1",
+  "duration": 19,
+  "summary": "项目: demo-project-1; 上下文: 完成用户认证功能开发，采用TDD方法，使用React和Node.js，性能提升30%; 原则违规: 2个; 成功要素: 2个; 使用工具: 2个",
+  "lessons": [
+    "持续改进",
+    "团队协作"
+  ],
+  "improvements": [
+    "流程优化",
+    "质量提升"
+  ],
+  "violations": []
+}

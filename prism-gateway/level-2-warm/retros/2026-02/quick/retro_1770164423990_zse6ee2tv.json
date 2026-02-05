@@ -1,0 +1,17 @@
+{
+  "id": "retro_1770164423990_zse6ee2tv",
+  "timestamp": "2026-02-04T00:20:23.990Z",
+  "type": "quick",
+  "project": "poor-context-test",
+  "duration": 0,
+  "summary": "项目: poor-context-test; 上下文: 测试; 原则违规: 1个; 成功要素: 1个",
+  "lessons": [
+    "持续改进",
+    "团队协作"
+  ],
+  "improvements": [
+    "流程优化",
+    "质量提升"
+  ],
+  "violations": []
+}

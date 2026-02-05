@@ -1,0 +1,17 @@
+{
+  "id": "retro_1770134056427_mgegec9dy",
+  "timestamp": "2026-02-03T15:54:16.427Z",
+  "type": "quick",
+  "project": "confidence-test",
+  "duration": 0,
+  "summary": "项目: confidence-test; 上下文: 详细的项目上下文信息，包含成功要素、失败原因、关键决策等内容; 原则违规: 1个; 成功要素: 1个",
+  "lessons": [
+    "持续改进",
+    "团队协作"
+  ],
+  "improvements": [
+    "流程优化",
+    "质量提升"
+  ],
+  "violations": []
+}

@@ -1,0 +1,17 @@
+{
+  "id": "retro_1770163369894_fap8zofav",
+  "timestamp": "2026-02-04T00:02:49.894Z",
+  "type": "quick",
+  "project": "violation-test",
+  "duration": 3,
+  "summary": "项目: violation-test; 上下文: 测试过程中违反了TDD原则，没有先写测试; 原则违规: 1个; 成功要素: 1个",
+  "lessons": [
+    "持续改进",
+    "团队协作"
+  ],
+  "improvements": [
+    "流程优化",
+    "质量提升"
+  ],
+  "violations": []
+}
