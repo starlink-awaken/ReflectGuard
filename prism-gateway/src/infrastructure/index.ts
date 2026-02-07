@@ -60,3 +60,33 @@ export type {
   ScheduleConfig
 } from './backup/index.js';
 export { BackupType, BackupStatus } from './backup/index.js';
+
+// 健康检查模块
+export {
+  HealthCheckService,
+  HealthChecker,
+  HealthScheduler,
+  SystemHealthChecker,
+  DiskHealthChecker,
+  DataHealthChecker,
+  APIHealthChecker,
+  HealthStatus,
+  CheckSeverity
+} from './health/index.js';
+export type {
+  HealthCheckServiceConfig,
+  HealthCheckResult,
+  HealthReport,
+  HealthCheckConfig,
+  HealthScheduleConfig,
+  HealthStats,
+  SystemMetrics,
+  DiskMetrics,
+  DataIntegrityResult,
+  ServiceHealthResult,
+  NetworkHealthResult,
+  HealthHistoryEntry,
+  HealthCheckFilter,
+  HealthAlertConfig,
+  SelfHealingAction
+} from './health/index.js';
