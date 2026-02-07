@@ -146,13 +146,19 @@ api/ 目录包含完整的API参考文档。
 ### 更新日志
 
 **v3.0.0** (2026-02-07)
-- 🎉 **文档组织重构和v3.0.0发布**
+- 🎉 **文档清理和README重写**
+  - 删除8个不必要文档（过程文档和过于正式的文档）
+  - README.md 完全重写为用户友好版本
+  - 根目录文档从17个精简到9个（-47%）
+  - 移动 TASK144_COMPLETION_REPORT.md 到正确位置
+  - 更新 INDEX.md 移除已删除文档的引用
+
+**v2.1.0** (2026-02-07)
+- 🎉 **文档组织重构**
   - 归档旧迁移文档（Phase 1→2）至 docs/archive/old-migrations/
   - 归档实验性框架（SIX_ORG）至 docs/archive/experimental-frameworks/
   - 整理 35+ Phase 3 报告至 reports/milestone/
   - 更新所有核心文档到 v3.0.0
-  - 创建文档标准指南
-- 详见：[DOCUMENT_REORGANIZATION_REPORT_V2.md](DOCUMENT_REORGANIZATION_REPORT_V2.md)
 
 **v2.0.0** (2026-02-07)
 - 🎉 **大规模文档整理和清理**
@@ -161,7 +167,6 @@ api/ 目录包含完整的API参考文档。
   - 新增5个配置文件
   - 精简CLAUDE.md文件1,030行
   - 增强.gitignore文件（11行→87行）
-- 详见：[DOCUMENT_CLEANUP_REPORT.md](DOCUMENT_CLEANUP_REPORT.md)
 
 **v1.1.0** (2026-02-03)
 - 添加 Week 2-3 完成报告
@@ -188,15 +193,13 @@ api/ 目录包含完整的API参考文档。
 ### 社区文档
 
 - **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** - 行为准则
-- **[GOVERNANCE.md](GOVERNANCE.md)** - 治理文档
+- **[CONTRIBUTORS.md](CONTRIBUTORS.md)** - 贡献者列表
 - **[SUPPORT.md](SUPPORT.md)** - 支持政策
-- **[CONTACT.md](CONTACT.md)** - 联系方式
 
 ### 报告文档
 
 - **[PROJECT_STATE.md](PROJECT_STATE.md)** - 项目状态（v3.0.0）
-- **[DOCUMENT_REORGANIZATION_REPORT_V2.md](DOCUMENT_REORGANIZATION_REPORT_V2.md)** - 文档重组报告（v3.0.0） ⭐ NEW
-- **[DOCUMENT_CLEANUP_REPORT.md](DOCUMENT_CLEANUP_REPORT.md)** - 文档清理报告（v2.0.0）
+- **[CHANGELOG.md](CHANGELOG.md)** - 版本历史
 
 ---
 
