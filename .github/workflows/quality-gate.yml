@@ -270,7 +270,7 @@ jobs:
 
       - name: 上传覆盖率到 Codecov
         if: github.event_name == 'push'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ${{ env.WORKING_DIRECTORY }}/coverage/lcov.info
           flags: unittests
