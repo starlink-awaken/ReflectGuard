@@ -66,3 +66,64 @@ export const RecordFilterSchema = z.object({
 export const RecordIdSchema = z.string().min(1, {
   errorMap: () => ({ message: 'recordId 不能为空' })
 });
+
+/**
+ * Custom Reports Schema
+ */
+export const CustomReportsSchema = z.object({
+  dimensions: z.array(z.string()).min(1, {
+    errorMap: () => ({ message: '至少需要指定一个维度' })
+  }),
+  metrics: z.array(z.string()).min(1, {
+    errorMap: () => ({ message: '至少需要指定一个指标' })
+  }),
+  filters: z.record(z.any()).optional(),
+  groupBy: z.string().optional(),
+  period: z.enum(['today', 'week', 'month', 'year', 'all']).default('week')
+});
+
+/**
+ * Export Query Schema
+ */
+export const ExportQuerySchema = z.object({
+  format: z.enum(['csv', 'json', 'excel'], {
+    errorMap: () => ({ message: 'format 必须是 csv、json 或 excel 之一' })
+  }),
+  period: z.enum(['today', 'week', 'month', 'year', 'all']).default('week'),
+  metrics: z.array(z.string()).optional()
+});
+
+/**
+ * Compare Analysis Schema
+ */
+export const CompareAnalysisSchema = z.object({
+  baselinePeriod: z.enum(['today', 'week', 'month', 'year'], {
+    errorMap: () => ({ message: 'baselinePeriod 必须是 today、week、month 或 year 之一' })
+  }),
+  currentPeriod: z.enum(['today', 'week', 'month', 'year'], {
+    errorMap: () => ({ message: 'currentPeriod 必须是 today、week、month 或 year 之一' })
+  }),
+  metrics: z.array(z.string()).min(1, {
+    errorMap: () => ({ message: '至少需要指定一个指标进行对比' })
+  })
+});
+
+/**
+ * Forecast Analysis Schema
+ */
+export const ForecastAnalysisSchema = z.object({
+  metric: z.enum(['violations', 'checks', 'avgCheckTime'], {
+    errorMap: () => ({ message: 'metric 必须是 violations、checks 或 avgCheckTime 之一' })
+  }),
+  method: z.enum(['linear', 'arima']).default('linear'),
+  periods: z.coerce.number().int().min(1).max(30).default(7),
+  historicalPeriod: z.enum(['week', 'month', 'year']).default('month')
+});
+
+/**
+ * Export types for external use
+ */
+export type CustomReportsQuery = z.infer<typeof CustomReportsSchema>;
+export type ExportQuery = z.infer<typeof ExportQuerySchema>;
+export type CompareAnalysisQuery = z.infer<typeof CompareAnalysisSchema>;
+export type ForecastAnalysisQuery = z.infer<typeof ForecastAnalysisSchema>;

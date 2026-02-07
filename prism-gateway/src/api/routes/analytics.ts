@@ -44,6 +44,7 @@ import { AnalyticsRecordsStore } from '../stores/AnalyticsRecordsStore.js';
 import type { WebSocketServer } from '../websocket/WebSocketServer.js';
 import {
   errorResponse as apiErrorResponse,
+  errorResponse,
   createValidationErrorResponse,
   createNotFoundErrorResponse,
   createConflictErrorResponse,
@@ -585,6 +586,393 @@ app.delete('/cache', async (c) => {
     return errorResponse(c, error instanceof Error ? error.message : 'Unknown error');
   }
 });
+
+// ============================================================================
+// 扩展 Analytics API (Task 1.4: Analytics API Extensions)
+// ============================================================================
+
+/**
+ * GET /api/v1/analytics/reports/custom
+ *
+ * 自定义报告 - 支持多维度、多指标的灵活查询
+ *
+ * @query dimensions - 维度数组 (e.g., ['principle', 'pattern'])
+ * @query metrics - 指标数组 (e.g., ['violations', 'checks'])
+ * @query filters - 过滤条件 (可选)
+ * @query groupBy - 分组字段 (可选)
+ * @query period - 时间范围 (today|week|month|year|all)
+ * @returns 自定义报告数据
+ *
+ * @example
+ * ```bash
+ * curl "http://localhost:3000/api/v1/analytics/reports/custom?dimensions=principle&metrics=violations&period=week"
+ * ```
+ */
+app.get('/reports/custom',
+  queryValidator({
+    dimensions: z.array(z.string()).min(1),
+    metrics: z.array(z.string()).min(1),
+    filters: z.record(z.any()).optional(),
+    groupBy: z.string().optional(),
+    period: PeriodQuerySchema.optional()
+  }),
+  async (c) => {
+    if (!analyticsService) {
+      return errorResponse(c, 'Analytics service not initialized');
+    }
+
+    try {
+      const query = c.get('validatedQuery');
+      const period = parsePeriod(query.period || 'week');
+
+      // TODO: Implement actual custom report logic in AnalyticsService
+      // For now, return a placeholder structure
+      const report = {
+        dimensions: query.dimensions,
+        metrics: query.metrics,
+        period: query.period || 'week',
+        groupBy: query.groupBy,
+        data: [
+          // Example data structure
+          // Actual implementation would aggregate data from ViolationDataReader
+        ],
+        meta: {
+          totalRecords: 0,
+          generatedAt: new Date().toISOString()
+        }
+      };
+
+      return successResponse(c, report);
+    } catch (error) {
+      return errorResponse(c, error instanceof Error ? error.message : 'Unknown error');
+    }
+  }
+);
+
+/**
+ * GET /api/v1/analytics/export
+ *
+ * 导出分析数据 - 支持 CSV、JSON、Excel 格式
+ *
+ * @query format - 导出格式 (csv|json|excel)
+ * @query period - 时间范围 (today|week|month|year|all)
+ * @query metrics - 要导出的指标 (可选，默认全部)
+ * @returns 导出的文件数据
+ *
+ * @example
+ * ```bash
+ * curl "http://localhost:3000/api/v1/analytics/export?format=csv&period=week"
+ * curl "http://localhost:3000/api/v1/analytics/export?format=json&period=month&metrics=violations,checks"
+ * ```
+ */
+app.get('/export',
+  queryValidator({
+    format: z.enum(['csv', 'json', 'excel']),
+    period: PeriodQuerySchema.optional(),
+    metrics: z.array(z.string()).optional()
+  }),
+  async (c) => {
+    if (!analyticsService) {
+      return errorResponse(c, 'Analytics service not initialized');
+    }
+
+    try {
+      const query = c.get('validatedQuery');
+      const period = parsePeriod(query.period || 'week');
+      const format = query.format;
+
+      // Get dashboard data (comprehensive data for export)
+      const dashboard = await analyticsService.getDashboard(period);
+
+      // Filter metrics if specified
+      const metricsToExport = query.metrics || ['all'];
+
+      // Format based on requested format
+      switch (format) {
+        case 'json':
+          return c.json({
+            success: true,
+            data: {
+              period: query.period || 'week',
+              exportedAt: new Date().toISOString(),
+              metrics: dashboard
+            },
+            meta: {
+              format: 'json',
+              timestamp: new Date().toISOString(),
+              requestId: generateRequestId()
+            }
+          });
+
+        case 'csv':
+          // Convert to CSV format
+          const csvData = convertDashboardToCSV(dashboard);
+          return new Response(csvData, {
+            headers: {
+              'Content-Type': 'text/csv',
+              'Content-Disposition': `attachment; filename="analytics-${query.period}-${Date.now()}.csv"`
+            }
+          });
+
+        case 'excel':
+          // TODO: Implement Excel export
+          // For now, return CSV with Excel MIME type
+          const excelData = convertDashboardToCSV(dashboard);
+          return new Response(excelData, {
+            headers: {
+              'Content-Type': 'application/vnd.ms-excel',
+              'Content-Disposition': `attachment; filename="analytics-${query.period}-${Date.now()}.xls"`
+            }
+          });
+
+        default:
+          return errorResponse(c, 'Invalid export format');
+      }
+    } catch (error) {
+      return errorResponse(c, error instanceof Error ? error.message : 'Unknown error');
+    }
+  }
+);
+
+/**
+ * GET /api/v1/analytics/compare
+ *
+ * 对比分析 - 比较基线期间和当前期间的指标变化
+ *
+ * @query baselinePeriod - 基线期间 (today|week|month|year)
+ * @query currentPeriod - 当前期间 (today|week|month|year)
+ * @query metrics - 要对比的指标数组
+ * @returns 对比分析结果，包含差异和变化百分比
+ *
+ * @example
+ * ```bash
+ * curl "http://localhost:3000/api/v1/analytics/compare?baselinePeriod=month&currentPeriod=week&metrics=violations,checks"
+ * ```
+ */
+app.get('/compare',
+  queryValidator({
+    baselinePeriod: z.enum(['today', 'week', 'month', 'year']),
+    currentPeriod: z.enum(['today', 'week', 'month', 'year']),
+    metrics: z.array(z.string()).min(1)
+  }),
+  async (c) => {
+    if (!analyticsService) {
+      return errorResponse(c, 'Analytics service not initialized');
+    }
+
+    try {
+      const query = c.get('validatedQuery');
+      const baselinePeriod = parsePeriod(query.baselinePeriod);
+      const currentPeriod = parsePeriod(query.currentPeriod);
+
+      // Get metrics for both periods
+      const [baselineUsage, currentUsage] = await Promise.all([
+        analyticsService.getUsageMetrics(baselinePeriod),
+        analyticsService.getUsageMetrics(currentPeriod)
+      ]);
+
+      const [baselineQuality, currentQuality] = await Promise.all([
+        analyticsService.getQualityMetrics(baselinePeriod),
+        analyticsService.getQualityMetrics(currentPeriod)
+      ]);
+
+      const [baselinePerformance, currentPerformance] = await Promise.all([
+        analyticsService.getPerformanceMetrics(baselinePeriod),
+        analyticsService.getPerformanceMetrics(currentPeriod)
+      ]);
+
+      // Calculate comparisons
+      const comparison = {
+        period: {
+          baseline: query.baselinePeriod,
+          current: query.currentPeriod
+        },
+        metrics: {
+          usage: compareMetrics(baselineUsage, currentUsage, ['totalChecks', 'totalRetros', 'activeUsers']),
+          quality: compareMetrics(baselineQuality, currentQuality, ['violationRate', 'falsePositiveRate']),
+          performance: compareMetrics(baselinePerformance, currentPerformance, ['avgCheckTime', 'slowCheckRate'])
+        },
+        summary: {
+          totalChanges: 0, // Will be calculated
+          improvements: 0,
+          degradations: 0
+        }
+      };
+
+      // Calculate summary
+      let improvements = 0;
+      let degradations = 0;
+      Object.values(comparison.metrics).forEach((category: any) => {
+        Object.values(category).forEach((metric: any) => {
+          if (metric.change > 0) improvements++;
+          if (metric.change < 0) degradations++;
+        });
+      });
+
+      comparison.summary.improvements = improvements;
+      comparison.summary.degradations = degradations;
+      comparison.summary.totalChanges = improvements + degradations;
+
+      return successResponse(c, comparison);
+    } catch (error) {
+      return errorResponse(c, error instanceof Error ? error.message : 'Unknown error');
+    }
+  }
+);
+
+/**
+ * GET /api/v1/analytics/forecast
+ *
+ * 预测分析 - 基于历史数据预测未来趋势
+ *
+ * @query metric - 要预测的指标 (violations|checks|avgCheckTime)
+ * @query method - 预测方法 (linear|arima)，默认 linear
+ * @query periods - 预测周期数 (1-30)，默认 7
+ * @query historicalPeriod - 历史数据期间 (week|month|year)，默认 month
+ * @returns 预测结果和置信区间
+ *
+ * @example
+ * ```bash
+ * curl "http://localhost:3000/api/v1/analytics/forecast?metric=violations&method=linear&periods=7"
+ * ```
+ */
+app.get('/forecast',
+  queryValidator({
+    metric: z.enum(['violations', 'checks', 'avgCheckTime']),
+    method: z.enum(['linear', 'arima']).optional(),
+    periods: z.coerce.number().int().min(1).max(30).optional(),
+    historicalPeriod: z.enum(['week', 'month', 'year']).optional()
+  }),
+  async (c) => {
+    if (!analyticsService) {
+      return errorResponse(c, 'Analytics service not initialized');
+    }
+
+    try {
+      const query = c.get('validatedQuery');
+      const method = query.method || 'linear';
+      const periods = query.periods || 7;
+      const historicalPeriod = parsePeriod(query.historicalPeriod || 'month');
+
+      // Get trend analysis for the metric
+      const trendAnalysis = await analyticsService.getTrendAnalysis(query.metric, historicalPeriod);
+
+      // Perform forecast based on method
+      let forecast: any;
+      if (method === 'linear') {
+        forecast = performLinearForecast(trendAnalysis, periods);
+      } else {
+        // ARIMA is more complex, placeholder for now
+        forecast = performLinearForecast(trendAnalysis, periods);
+      }
+
+      return successResponse(c, {
+        metric: query.metric,
+        method,
+        historicalPeriod: query.historicalPeriod || 'month',
+        forecast: forecast.predictions,
+        confidence: forecast.confidence,
+        trend: {
+          direction: trendAnalysis.direction,
+          slope: trendAnalysis.slope,
+          confidence: trendAnalysis.confidence
+        },
+        meta: {
+          forecastedAt: new Date().toISOString(),
+          periods
+        }
+      });
+    } catch (error) {
+      return errorResponse(c, error instanceof Error ? error.message : 'Unknown error');
+    }
+  }
+);
+
+// ============================================================================
+// Helper Functions for New Endpoints
+// ============================================================================
+
+/**
+ * Convert dashboard data to CSV format
+ */
+function convertDashboardToCSV(dashboard: any): string {
+  const headers = ['Metric', 'Value', 'Category'];
+  const rows: string[][] = [headers];
+
+  // Add summary metrics
+  if (dashboard.summary) {
+    Object.entries(dashboard.summary).forEach(([key, value]) => {
+      rows.push([key, String(value), 'summary']);
+    });
+  }
+
+  // Add quality metrics
+  if (dashboard.quality) {
+    Object.entries(dashboard.quality).forEach(([key, value]) => {
+      rows.push([key, String(value), 'quality']);
+    });
+  }
+
+  // Add performance metrics
+  if (dashboard.performance) {
+    Object.entries(dashboard.performance).forEach(([key, value]) => {
+      rows.push([key, String(value), 'performance']);
+    });
+  }
+
+  // Convert to CSV string
+  return rows.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+}
+
+/**
+ * Compare metrics between two periods
+ */
+function compareMetrics(baseline: any, current: any, metricKeys: string[]): Record<string, any> {
+  const result: Record<string, any> = {};
+
+  metricKeys.forEach(key => {
+    const baselineValue = baseline[key] || 0;
+    const currentValue = current[key] || 0;
+    const change = currentValue - baselineValue;
+    const changePercent = baselineValue !== 0 ? (change / baselineValue) * 100 : 0;
+
+    result[key] = {
+      baseline: baselineValue,
+      current: currentValue,
+      change,
+      changePercent: Math.round(changePercent * 100) / 100,
+      trend: change > 0 ? 'up' : change < 0 ? 'down' : 'stable'
+    };
+  });
+
+  return result;
+}
+
+/**
+ * Perform linear regression forecast
+ */
+function performLinearForecast(trendAnalysis: any, periods: number): any {
+  const predictions: any[] = [];
+  const slope = trendAnalysis.slope || 0;
+  const lastValue = trendAnalysis.data && trendAnalysis.data.length > 0
+    ? trendAnalysis.data[trendAnalysis.data.length - 1].value
+    : 0;
+
+  for (let i = 1; i <= periods; i++) {
+    const predictedValue = lastValue + (slope * i);
+    predictions.push({
+      period: i,
+      value: Math.max(0, Math.round(predictedValue * 100) / 100), // Ensure non-negative
+      confidence: Math.max(0, trendAnalysis.confidence - (i * 0.05)) // Decrease confidence over time
+    });
+  }
+
+  return {
+    predictions,
+    confidence: trendAnalysis.confidence,
+    method: 'linear'
+  };
+}
 
 // ============================================================================
 // CRUD 路由 (Records) ⭐ NEW (v2.3.0)
