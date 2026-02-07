@@ -90,3 +90,42 @@ export type {
   HealthAlertConfig,
   SelfHealingAction
 } from './health/index.js';
+
+// 指标收集模块
+export {
+  MetricsService,
+  MetricCollector,
+  MetricsStorage,
+  MetricsAggregator,
+  QueryEngine,
+  SystemMetricsCollector,
+  ProcessMetricsCollector,
+  APIMetricsCollector,
+  WebSocketMetricsCollector,
+  BusinessMetricsCollector,
+  DataMetricsCollector,
+  MetricType,
+  AggregationFunction,
+  TimeSeriesGranularity
+} from './metrics/index.js';
+export type {
+  MetricsServiceConfig,
+  MetricDataPoint,
+  AggregatedMetricPoint,
+  MetricCollectorConfig,
+  SystemMetricsSnapshot,
+  ProcessMetricsSnapshot,
+  APIMetricsSnapshot,
+  WebSocketMetricsSnapshot,
+  BusinessMetricsSnapshot,
+  DataMetricsSnapshot,
+  MetricsQueryFilter,
+  MetricsQueryResult,
+  MetricsStorageConfig,
+  MetricsStorageStats,
+  MetricsServiceStats,
+  MetricMetadata,
+  TimeRange,
+  DownsamplingConfig,
+  MetricsSnapshot
+} from './metrics/index.js';
