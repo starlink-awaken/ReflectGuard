@@ -13,21 +13,25 @@
 
 ```
 level-3-cold/
-├── sops/                    # 标准操作流程（Standard Operating Procedures）
-│   ├── code-review.md      # 代码审查流程
-│   ├── deployment.md       # 部署流程
-│   ├── incident-response.md # 应急响应流程
-│   └── retrospective.md    # 复盘流程
-├── checklists/             # 检查清单
-│   ├── deployment.md       # 部署检查清单
-│   ├── security.md         # 安全检查清单
-│   ├── pr-review.md        # PR 审查清单
-│   └── testing.md          # 测试检查清单
-└── templates/              # 文档模板
-    ├── retro-report.md     # 复盘报告模板
-    ├── weekly-report.md    # 周报模板
-    ├── decision-log.md     # 决策日志模板
-    └── meeting-minutes.md  # 会议纪要模板
+├── sops/                        # 标准操作流程（Standard Operating Procedures）
+│   ├── code-review.md          # 代码审查流程
+│   ├── deployment.md           # 部署流程
+│   ├── incident-response.md    # 应急响应流程
+│   ├── retrospective.md        # 复盘流程
+│   └── frontend-development.md # 前端开发流程 ⭐ NEW
+├── checklists/                 # 检查清单
+│   ├── deployment.md           # 部署检查清单
+│   ├── security.md             # 安全检查清单
+│   ├── pr-review.md            # PR 审查清单
+│   ├── testing.md              # 测试检查清单
+│   ├── frontend-pr-review.md   # 前端 PR 审查清单 ⭐ NEW
+│   └── api-integration.md      # API 集成检查清单 ⭐ NEW
+└── templates/                  # 文档模板
+    ├── retro-report.md         # 复盘报告模板
+    ├── weekly-report.md        # 周报模板
+    ├── decision-log.md         # 决策日志模板
+    ├── meeting-minutes.md      # 会议纪要模板
+    └── component-documentation.md # 组件文档模板 ⭐ NEW
 ```
 
 ---
@@ -169,11 +173,17 @@ cat level-3-cold/templates/retro-report.md
 ## 📊 数据统计
 
 **目录信息：**
-- **SOPs：** 4 个标准流程
-- **Checklists：** 4 个检查清单
-- **Templates：** 4 个文档模板
-- **总大小：** ~50KB
+- **SOPs：** 5 个标准流程（+frontend-development.md）
+- **Checklists：** 6 个检查清单（+frontend-pr-review.md, api-integration.md）
+- **Templates：** 5 个文档模板（+component-documentation.md）
+- **总大小：** ~150KB（+100KB Phase 3 前端文档）
 - **访问频率：** 低（按需）
+
+**新增内容（2026-02-07）：**
+- 🎨 前端开发 SOP（20KB）- Phase 3 Week 2 完成后新增
+- 📋 前端 PR 审查清单（15KB）- 前端代码审查标准
+- 🔌 API 集成检查清单（18KB）- 前后端集成测试
+- 📝 组件文档模板（12KB）- React 组件文档标准
 
 **维护策略：**
 - **更新频率：** 版本升级时更新
