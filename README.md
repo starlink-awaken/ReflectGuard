@@ -56,34 +56,90 @@ prism migrate --dry-run
 
 ## 📚 文档导航
 
-### 📊 [完整文档索引](INDEX.md)
+### 📊 [文档中心](docs/)
 
-查看完整的文档索引，包含所有报告、设计、使用文档和API文档。
+按角色分类的完整文档中心。
 
-### 核心文档
+#### 👤 用户文档
+- [快速开始](docs/users/quick-start.md) - 5分钟快速上手
+- [安装指南](docs/users/installation.md) - 系统安装说明
+- [用户指南](docs/users/user-guide.md) - 完整使用指南
+- [配置说明](docs/users/configuration.md) - 系统配置参考
+- [常见问题](docs/users/faq.md) - 常见问题解答
+- [故障排查](docs/users/troubleshooting.md) - 问题排查指南
+
+#### 👨‍💻 开发者文档
+- [开发快速开始](docs/developers/getting-started.md) - 开发环境搭建
+- [系统架构](docs/developers/architecture.md) - 架构设计文档
+- [API 参考](docs/developers/api-reference.md) - 完整 API 参考
+- [贡献指南](docs/developers/contributing-guide.md) - 贡献流程
+- [测试指南](docs/developers/testing-guide.md) - 测试规范
+- [编码规范](docs/developers/coding-standards.md) - 代码规范
+
+#### 🤝 贡献者文档
+- [工作流程](docs/contributors/workflow.md) - 贡献工作流程
+- [代码审查](docs/contributors/code-review.md) - 审查规范
+- [项目标准](docs/contributors/standards.md) - 代码和文档标准
+
+#### 🔧 运维文档
+- [部署指南](docs/operators/deployment.md) - 生产环境部署
+- [监控指南](docs/operators/monitoring.md) - 监控和告警
+- [故障排查](docs/operators/troubleshooting.md) - 运维故障排查
+
+### 📋 项目文档
 
 | 文档 | 描述 |
 |------|------|
-| [PHASE1_MVP_DEEP_RETROSPECTIVE_REPORT.md](reports/PHASE1_MVP_DEEP_RETROSPECTIVE_REPORT.md) | Phase 1深度复盘（23KB，7维度分析） |
-| [PHASE2_ARCHITECTURE.md](reports/PHASE2_ARCHITECTURE.md) | Phase 2系统架构设计（37KB，5层架构） |
-| [WEEK2-3_COMPLETION_REPORT.md](reports/WEEK2-3_COMPLETION_REPORT.md) | Week 2-3完成报告（357个测试通过） |
+| [CHANGELOG.md](CHANGELOG.md) | 版本历史和变更记录 |
+| [CLAUDE.md](CLAUDE.md) | AI 上下文文档 |
+| [INDEX.md](INDEX.md) | 完整文档索引 |
 
-### 使用指南
-
-| 文档 | 描述 |
-|------|------|
-| [mcp-server.md](docs/mcp-server.md) | MCP Server使用文档 |
-| [FILE_LOCK_USAGE.md](docs/FILE_LOCK_USAGE.md) | 文件锁使用文档 |
-| [MIGRATION_GUIDE.md](docs/MIGRATION_GUIDE.md) | 数据迁移指南 |
-
-### API文档
+### 📊 报告文档
 
 | 文档 | 描述 |
 |------|------|
-| [API文档总览](api/README.md) | API文档索引 |
-| [GatewayGuard](api/GatewayGuard.md) | Gateway检查器 |
-| [MemoryStore](api/MemoryStore.md) | 三层MEMORY架构 |
-| [DataExtractor](api/DataExtractor.md) | 7维度数据提取 |
+| [企业级开源标准报告](reports/ENTERPRISE_OPEN_SOURCE_STANDARDS_COUNCIL_REPORT.md) | 开源标准评估 |
+| [PHASE2_ARCHITECTURE.md](reports/PHASE2_ARCHITECTURE.md) | Phase 2 系统架构设计 |
+| [WEEK9-10_MULTI_TEAM_EXECUTION_REPORT.md](reports/WEEK9-10_MULTI_TEAM_EXECUTION_REPORT.md) | 多团队执行报告 |
+
+### 🔌 API 文档
+
+| 文档 | 描述 |
+|------|------|
+| [API 文档总览](api/README.md) | API 文档索引 |
+| [Gateway API](api/GatewayGuard.md) | Gateway 检查器 |
+| [Memory API](api/MemoryStore.md) | 三层 MEMORY 架构 |
+| [Analytics API](api/analytics/) | 分析模块 API |
+
+### 🔧 技术文档
+
+| 文档 | 描述 |
+|------|------|
+| [MCP Server](docs/mcp-server.md) | MCP Server 集成 |
+| [文件锁使用](docs/FILE_LOCK_USAGE.md) | 文件锁文档 |
+| [数据迁移](docs/MIGRATION_GUIDE.md) | 数据迁移指南 |
+
+---
+
+## 🏘️ 社区
+
+### 行为准则
+
+- [行为准则](CODE_OF_CONDUCT.md) - 社区行为准则
+
+### 治理文档
+
+- [治理文档](GOVERNANCE.md) - 项目治理和决策流程
+
+### 贡献
+
+- [贡献者列表](CONTRIBUTORS.md) - 贡献者名单
+- [致谢](ACKNOWLEDGMENTS.md) - 感谢所有贡献者
+
+### 支持
+
+- [支持政策](SUPPORT.md) - 支持级别和 SLA
+- [联系方式](CONTACT.md) - 联系方式
 
 ---
 
@@ -91,10 +147,10 @@ prism migrate --dry-run
 
 ### 当前版本
 
-**版本：** 1.1.0
-**状态：** Phase 2.0 基础设施完成
+**版本：** 2.3.0
+**状态：** Phase 2 Week 4-5 收尾工作完成 ✅
 **测试覆盖率：** >90%
-**测试数量：** 357个（100%通过）
+**测试数量：** 1500+（+265%）
 
 ### Phase 2 进度
 
@@ -102,12 +158,12 @@ prism migrate --dry-run
 |------|------|--------|
 | Phase 2.0 准备周 | ✅ 完成 | 100% |
 | Week 2-3: 基础设施 | ✅ 完成 | 100% |
-| Week 4-5: Analytics+API | 🔜 待开始 | 0% |
-| Week 6-7: Web UI | ⏳ 规划中 | 0% |
+| Week 4-5: Analytics+API | ✅ 完成 | 100% |
+| Week 6-7: Web UI | 🔜 待开始 | 0% |
 | Week 8-9: 调度+备份 | ⏳ 规划中 | 0% |
 | Week 10-11: 生产就绪 | ⏳ 规划中 | 0% |
 
-**整体进度：** ~20% 完成（2/10周）
+**整体进度：** ~30% 完成（3/10周）
 
 ---
 
@@ -198,14 +254,18 @@ MIT License
 
 ## 🔗 相关链接
 
-- **项目仓库：** `~/.prism-gateway/`
-- **文档仓库：** `~/workspace/agent/prism-gateway-docs/`
-- **知识库：** `~/.claude/MEMORY/LEARNING/Gateway/`
+- **主项目：** [prism-gateway/](prism-gateway/)
+- **文档中心：** [docs/](docs/)
+- **API 文档：** [api/](api/)
+- **项目报告：** [reports/](reports/)
+- **GitHub Issues：** [提交问题](https://github.com/your-repo/issues)
+- **GitHub Discussions：** [社区讨论](https://github.com/your-repo/discussions)
 
 ---
 
-**版本：** 1.1.0
-**最后更新：** 2026-02-03
+**版本：** 2.3.0
+**最后更新：** 2026-02-07
+**文档版本：** 2.0.0
 
 *PAI - Personal AI Infrastructure*
 *Version: 2.5*

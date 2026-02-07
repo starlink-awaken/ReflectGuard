@@ -1,0 +1,49 @@
+# Dependabot 配置
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # 主项目的依赖更新
+  - package-ecosystem: "npm"
+    directory: "/prism-gateway"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "xiamingxing"
+    labels:
+      - "dependencies"
+      - "npm"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    ignore:
+      # 忽略某些包的更新
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+    groups:
+      # 将开发依赖分组
+      dev-dependencies:
+        patterns:
+          - "@types/*"
+          - "typescript*"
+          - "eslint*"
+          - "prettier*"
+        exclude-patterns:
+          - "@types/node"
+
+  # GitHub Actions 更新
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "github-actions"
+      - "dependencies"
+    commit-message:
+      prefix: "ci"
