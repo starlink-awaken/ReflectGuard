@@ -1,6 +1,6 @@
 {
   "name": "prism-gateway",
-  "version": "2.4.0",
+  "version": "3.0.0",
   "description": "PRISM-Gateway: 统一的7维度复盘和Gateway系统",
   "type": "module",
   "main": "src/index.ts",
