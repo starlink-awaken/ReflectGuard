@@ -305,6 +305,59 @@ export interface TrendAnalysis {
 }
 
 /**
+ * 趋势对比结果
+ *
+ * @description
+ * 当前周期与上一周期的对比数据
+ */
+export interface TrendComparison {
+  /**
+   * 指标名称
+   */
+  metric: string;
+
+  /**
+   * 当前值
+   */
+  currentValue: number;
+
+  /**
+   * 上一周期值
+   */
+  previousValue: number;
+
+  /**
+   * 绝对变化量
+   */
+  change: number;
+
+  /**
+   * 百分比变化（-1 到 1）
+   */
+  percentChange: number;
+
+  /**
+   * 变化方向
+   */
+  direction: 'up' | 'down' | 'stable';
+
+  /**
+   * 改进率（0-1）
+   */
+  improvementRate: number;
+
+  /**
+   * 当前周期趋势分析
+   */
+  currentAnalysis: TrendAnalysis;
+
+  /**
+   * 上一周期趋势分析
+   */
+  previousAnalysis: TrendAnalysis;
+}
+
+/**
  * 异常类型
  */
 export type AnomalyType =

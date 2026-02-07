@@ -6,6 +6,14 @@
 
 ## 变更记录 (Changelog)
 
+### 2026-02-06
+- **新增安全和基础设施模块文档**（v2.2.0）
+  - KeyManagementService - AES-256-GCM加密服务
+  - ErrorHandler - 统一错误处理中间件
+  - LoggerSanitizer - 日志脱敏工具
+  - timingSafeEqual - 恒定时间比较工具
+- 更新README.md，添加新模块API文档
+
 ### 2026-02-04
 - 初始化模块文档
 - 完成 API 文档扫描和分类

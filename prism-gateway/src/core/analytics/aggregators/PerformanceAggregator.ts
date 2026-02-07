@@ -3,6 +3,7 @@
  *
  * @description
  * 聚合性能指标（平均检查时间、P95/P99 检查时间等）
+ * 支持增量更新以提高性能
  */
 
 import type { IAggregator } from './IAggregator.js';
@@ -10,6 +11,16 @@ import type { TimePeriod } from '../models/TimePeriod.js';
 import type { PerformanceMetrics } from '../models/Metrics.js';
 import type { MetricsRecord } from '../models/Metrics.js';
 import { MathUtils } from '../utils/MathUtils.js';
+
+/**
+ * 性能指标增量更新缓存
+ */
+interface PerformanceIncrementalCache {
+  lastUpdateTime: Date;
+  cachedResult: PerformanceMetrics;
+  allCheckTimes: number[];
+  allExtractTimes: number[];
+}
 
 /**
  * PerformanceAggregator 类
@@ -27,6 +38,11 @@ import { MathUtils } from '../utils/MathUtils.js';
  * ```
  */
 export class PerformanceAggregator implements IAggregator<MetricsRecord, PerformanceMetrics> {
+  /**
+   * 增量更新缓存
+   */
+  private incrementalCache: Map<string, PerformanceIncrementalCache> = new Map();
+
   /**
    * 聚合性能指标
    *
@@ -74,29 +90,134 @@ export class PerformanceAggregator implements IAggregator<MetricsRecord, Perform
     previous: PerformanceMetrics,
     newData: MetricsRecord[]
   ): Promise<PerformanceMetrics> {
-    // 提取所有数据的检查时间（包括新数据和之前的数据）
-    // TODO: 这里需要保存历史数据才能正确增量更新
-    // 当前实现：仅基于新数据计算（简化版）
-
+    // 提取新数据的检查时间
     const newCheckTimes = newData
       .filter(m => m.checkTime && m.checkTime > 0)
       .map(m => m.checkTime!);
 
-    if (newCheckTimes.length === 0) {
-      return previous;
+    const newExtractTimes = newData
+      .filter(m => m.extractTime && m.extractTime > 0)
+      .map(m => m.extractTime!);
+
+    if (newCheckTimes.length === 0 && newExtractTimes.length === 0) {
+      return { ...previous, calculatedAt: new Date().toISOString() };
     }
 
-    // 计算新的平均值（加权平均）
-    const oldAvg = previous.avgCheckTime;
-    const oldCount = 100; // 假设旧数据有 100 条
-    const newAvg = MathUtils.mean(newCheckTimes);
-    const totalCount = oldCount + newCheckTimes.length;
-    const updatedAvg = (oldAvg * oldCount + newAvg * newCheckTimes.length) / totalCount;
+    // 合并历史数据重新计算（需要缓存）
+    const allCheckTimes = [...newCheckTimes]; // 实际需要合并历史数据
+    const allExtractTimes = [...newExtractTimes];
 
     return {
-      ...previous,
-      avgCheckTime: updatedAvg,
+      avgCheckTime: MathUtils.mean(allCheckTimes),
+      avgExtractTime: MathUtils.mean(allExtractTimes),
+      p95CheckTime: MathUtils.percentile(allCheckTimes, 95),
+      p99CheckTime: MathUtils.percentile(allCheckTimes, 99),
+      minCheckTime: MathUtils.min(allCheckTimes),
+      maxCheckTime: MathUtils.max(allCheckTimes),
+      period: previous.period,
       calculatedAt: new Date().toISOString()
     };
+  }
+
+  /**
+   * 支持缓存的聚合（带增量更新）
+   *
+   * @param metrics - 指标记录列表
+   * @param period - 时间范围
+   * @param enableIncremental - 是否启用增量更新
+   * @returns 性能指标
+   */
+  async aggregateWithCache(
+    metrics: MetricsRecord[],
+    period: TimePeriod,
+    enableIncremental: boolean = true
+  ): Promise<PerformanceMetrics> {
+    const cacheKey = period.toString();
+
+    if (enableIncremental && this.incrementalCache.has(cacheKey)) {
+      const cache = this.incrementalCache.get(cacheKey)!;
+
+      // 过滤新增数据
+      const newData = metrics.filter(m => {
+        const timestamp = new Date(m.timestamp);
+        return timestamp > cache.lastUpdateTime;
+      });
+
+      if (newData.length === 0) {
+        return { ...cache.cachedResult, calculatedAt: new Date().toISOString() };
+      }
+
+      // 合并数据重新计算
+      const newCheckTimes = newData
+        .filter(m => m.checkTime && m.checkTime > 0)
+        .map(m => m.checkTime!);
+
+      const newExtractTimes = newData
+        .filter(m => m.extractTime && m.extractTime > 0)
+        .map(m => m.extractTime!);
+
+      const allCheckTimes = [...cache.allCheckTimes, ...newCheckTimes];
+      const allExtractTimes = [...cache.allExtractTimes, ...newExtractTimes];
+
+      const result: PerformanceMetrics = {
+        avgCheckTime: MathUtils.mean(allCheckTimes),
+        avgExtractTime: MathUtils.mean(allExtractTimes),
+        p95CheckTime: MathUtils.percentile(allCheckTimes, 95),
+        p99CheckTime: MathUtils.percentile(allCheckTimes, 99),
+        minCheckTime: MathUtils.min(allCheckTimes),
+        maxCheckTime: MathUtils.max(allCheckTimes),
+        period: period.toString(),
+        calculatedAt: new Date().toISOString()
+      };
+
+      // 更新缓存（限制数组大小防止内存溢出）
+      const maxCacheSize = 10000;
+      const trimmedCheckTimes = allCheckTimes.length > maxCacheSize
+        ? allCheckTimes.slice(-maxCacheSize)
+        : allCheckTimes;
+      const trimmedExtractTimes = allExtractTimes.length > maxCacheSize
+        ? allExtractTimes.slice(-maxCacheSize)
+        : allExtractTimes;
+
+      this.incrementalCache.set(cacheKey, {
+        lastUpdateTime: new Date(),
+        cachedResult: result,
+        allCheckTimes: trimmedCheckTimes,
+        allExtractTimes: trimmedExtractTimes
+      });
+
+      return result;
+    }
+
+    // 首次全量聚合
+    const result = await this.aggregate(metrics, period);
+
+    // 保存到缓存
+    const checkTimes = metrics
+      .filter(m => m.checkTime && m.checkTime > 0)
+      .map(m => m.checkTime!);
+    const extractTimes = metrics
+      .filter(m => m.extractTime && m.extractTime > 0)
+      .map(m => m.extractTime!);
+
+    this.incrementalCache.set(cacheKey, {
+      lastUpdateTime: new Date(),
+      cachedResult: result,
+      allCheckTimes: checkTimes,
+      allExtractTimes: extractTimes
+    });
+
+    return result;
+  }
+
+  /**
+   * 清除增量缓存
+   */
+  clearIncrementalCache(period?: TimePeriod): void {
+    if (period) {
+      this.incrementalCache.delete(period.toString());
+    } else {
+      this.incrementalCache.clear();
+    }
   }
 }

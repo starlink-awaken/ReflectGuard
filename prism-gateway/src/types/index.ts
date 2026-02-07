@@ -9,6 +9,7 @@
  * - 复盘记录类型
  * - 违规记录类型
  * - 7维度数据提取类型
+ * - 简化消息格式类型
  */
 
 /**
@@ -403,3 +404,16 @@ export {
   RetroExecution,
   RetroReport
 } from './retrospective.js';
+
+// 简化消息格式类型
+export {
+  MessageType,
+  MessagePriority,
+  SimpleMessage,
+  MessageContent,
+  ExtendedMessage,
+  MessageOptions,
+  MessageResponse,
+  BatchMessage,
+  MessageStats
+} from './message.js';

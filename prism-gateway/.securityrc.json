@@ -1,0 +1,179 @@
+{
+  "$schema": "./.securityrc.schema.json",
+  "version": "1.0.0",
+  "project": "prism-gateway",
+  "description": "PRISM-Gateway 安全扫描配置",
+
+  "scan": {
+    "enabled": true,
+    "parallel": true,
+    "failOnError": true,
+    "timeoutMinutes": 15
+  },
+
+  "dependencyScan": {
+    "enabled": true,
+    "tools": ["bun-audit", "npm-audit"],
+    "severityThreshold": "high",
+    "allowWarnings": false,
+    "allowedVulnerabilities": {
+      "moderate": 5,
+      "low": 10
+    },
+    "excludePackages": [],
+    "auditLevel": "moderate"
+  },
+
+  "codeScan": {
+    "enabled": true,
+    "tools": ["eslint-security", "no-secrets"],
+    "config": ".eslintrc.security.json",
+    "exclude": [
+      "node_modules/**",
+      "dist/**",
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      "**/examples/**"
+    ],
+    "rules": {
+      "security/detect-buffer-noassert": "error",
+      "security/detect-child-process": "warn",
+      "security/detect-disable-mustache-escape": "error",
+      "security/detect-eval-with-expression": "error",
+      "security/detect-no-csrf-before-method-override": "error",
+      "security/detect-non-literal-fs-filename": "warn",
+      "security/detect-non-literal-regexp": "warn",
+      "security/detect-non-literal-require": "warn",
+      "security/detect-object-injection": "warn",
+      "security/detect-possible-timing-attacks": "warn",
+      "security/detect-pseudoRandomBytes": "error",
+      "no-secrets/secrets": "error"
+    }
+  },
+
+  "secretsScan": {
+    "enabled": true,
+    "tools": ["gitleaks", "custom-patterns"],
+    "patterns": [
+      {
+        "name": "Password",
+        "pattern": "(?i)(?:password|passwd|pwd)\\s*[=:]\\s*['\\\"]([^'\\\"]{8,})['\\\"]",
+        "severity": "high"
+      },
+      {
+        "name": "API Key",
+        "pattern": "(?i)(?:api[_-]?key|token)\\s*[=:]\\s*['\\\"]([^'\\\"]{16,})['\\\"]",
+        "severity": "critical"
+      },
+      {
+        "name": "AWS Access Key",
+        "pattern": "\\b(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}\\b",
+        "severity": "critical"
+      },
+      {
+        "name": "GitHub Token",
+        "pattern": "\\bgh[pous]_[A-Za-z0-9_]{36,}\\b",
+        "severity": "critical"
+      },
+      {
+        "name": "Stripe Key",
+        "pattern": "\\bsk-[a-zA-Z0-9]{20,}\\b",
+        "severity": "critical"
+      },
+      {
+        "name": "Google API Key",
+        "pattern": "\\bAIza[A-Za-z0-9_\\-]{35}\\b",
+        "severity": "high"
+      },
+      {
+        "name": "Bearer Token",
+        "pattern": "\\bbearer\\s+[a-zA-Z0-9._~+/=\\-]{20,}\\b",
+        "severity": "high"
+      },
+      {
+        "name": "Slack Token",
+        "pattern": "\\b[xX]ox[bap]-[A-Za-z0-9\\-]{10,}\\b",
+        "severity": "critical"
+      }
+    ],
+    "excludePaths": [
+      "node_modules/**",
+      "dist/**",
+      "**/*.example",
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      "**/examples/**"
+    ],
+    "allowList": [
+      "password = \"example\"",
+      "api_key = \"test_key\"",
+      "SECRET = \"secret\""
+    ]
+  },
+
+  "owaspCheck": {
+    "enabled": true,
+    "categories": {
+      "A01": {
+        "name": "Broken Access Control",
+        "enabled": true,
+        "severity": "high"
+      },
+      "A02": {
+        "name": "Cryptographic Failures",
+        "enabled": true,
+        "severity": "critical"
+      },
+      "A03": {
+        "name": "Injection",
+        "enabled": true,
+        "severity": "critical"
+      },
+      "A04": {
+        "name": "Insecure Design",
+        "enabled": true,
+        "severity": "high"
+      },
+      "A05": {
+        "name": "Security Misconfiguration",
+        "enabled": true,
+        "severity": "medium"
+      },
+      "A07": {
+        "name": "Authentication Failures",
+        "enabled": true,
+        "severity": "high"
+      }
+    }
+  },
+
+  "compliance": {
+    "standards": ["OWASP-TOP-10", "ASVS-L1", "PCI-DSS-SSR"],
+    "dataProtection": ["GDPR", "CCPA"],
+    "encryption": {
+      "atRest": "AES-256-GCM",
+      "inTransit": "TLS-1.3"
+    }
+  },
+
+  "reporting": {
+    "formats": ["json", "txt", "markdown"],
+    "outputDir": "reports/security",
+    "retentionDays": 30,
+    "includeSummary": true,
+    "includeRecommendations": true
+  },
+
+  "notifications": {
+    "onFailure": true,
+    "onWarning": false,
+    "channels": ["github-comment"]
+  },
+
+  "ci": {
+    "runOnPR": true,
+    "runOnPush": true,
+    "runOnSchedule": "0 2 * * *",
+    "blockOnFailure": true
+  }
+}

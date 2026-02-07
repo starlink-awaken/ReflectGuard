@@ -1,0 +1,77 @@
+{
+  "$schema": "./quality-gate.schema.json",
+  "version": "1.0.0",
+  "description": "PRISM-Gateway 质量门禁配置",
+
+  "qualityStandards": {
+    "coverage": {
+      "minimum": 85,
+      "threshold": 80,
+      "blockOnDecrease": true,
+      "excludedPaths": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "**/types/**",
+        "**/node_modules/**"
+      ]
+    },
+    "complexity": {
+      "maximum": 10,
+      "blockOnExceed": true
+    },
+    "security": {
+      "blockOnCritical": true,
+      "blockOnHigh": true,
+      "allowMedium": false
+    },
+    "tests": {
+      "minimumPassRate": 100,
+      "blockOnFailure": true
+    }
+  },
+
+  "checkGroups": {
+    "fastChecks": {
+      "name": "快速检查",
+      "timeout": "5m",
+      "jobs": [
+        "type-check",
+        "lint-check"
+      ]
+    },
+    "fullChecks": {
+      "name": "完整检查",
+      "timeout": "15m",
+      "jobs": [
+        "unit-tests",
+        "coverage-check",
+        "security-scan"
+      ]
+    }
+  },
+
+  "gateRules": {
+    "allChecksMustPass": true,
+    "allowSkipWithLabel": false,
+    "requiredApprovals": 1,
+    "blockOnConflicts": true
+  },
+
+  "notifications": {
+    "onPass": {
+      "enabled": true,
+      "message": "质量门禁通过，代码可以合并"
+    },
+    "onFail": {
+      "enabled": true,
+      "message": "质量门禁失败，请修复问题后再合并",
+      "includeDetails": true
+    }
+  },
+
+  "exemptions": {
+    "paths": [],
+    "labels": [],
+    "users": []
+  }
+}

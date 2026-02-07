@@ -35,6 +35,161 @@ console.log(checkResult.status); // PASS | WARNING | BLOCKED
 
 ## Core Modules
 
+### Security & Infrastructure ⭐ NEW (v2.2.0)
+
+#### KeyManagementService
+
+AES-256-GCM敏感数据加密服务，解决SEC-002威胁。
+
+**Features:**
+- 密钥生成和管理
+- 配置加密存储
+- 密钥轮换机制
+- 性能：加密/解密 <10ms（实际 ~3ms）
+
+**Usage:**
+
+```typescript
+import { KeyManagementService } from 'prism-gateway/security';
+
+const kms = new KeyManagementService({
+  masterKey: process.env.PRISM_MASTER_KEY!
+});
+
+// Encrypt sensitive config
+await kms.encryptConfigValue('JWT_SECRET', 'my-secret-key');
+
+// Decrypt at runtime
+const secret = await kms.decryptConfigValue('JWT_SECRET');
+
+// Key rotation (recommended every 90 days)
+const newKey = await kms.rotateMasterKey();
+```
+
+**API:**
+- `encryptConfigValue(key: string, value: string): Promise<string>` - Encrypt config value
+- `decryptConfigValue(key: string): Promise<string | null>` - Decrypt config value
+- `encryptConfigBatch(configs: Record<string, string>): Promise<void>` - Batch encrypt
+- `encrypt(plaintext: string, key: string): Promise<string>` - AES-256-GCM encrypt
+- `decrypt(ciphertext: string, key: string): Promise<string>` - AES-256-GCM decrypt
+- `generateKey(): Promise<string>` - Generate 256-bit key
+- `rotateMasterKey(): Promise<string>` - Rotate master key
+- `cleanup(): void` - Clear sensitive data from memory
+
+**Performance:** <10ms for encrypt/decrypt (actual ~3ms)
+
+#### ErrorHandler
+
+统一错误处理中间件，解决SEC-006威胁。
+
+**Features:**
+- 错误分类和HTTP状态码映射
+- 开发/生产环境错误信息区分
+- 敏感信息自动过滤
+- 结构化错误日志
+- 唯一错误ID生成
+
+**Usage:**
+
+```typescript
+import { ErrorHandler, ValidationError } from 'prism-gateway/middleware';
+
+const errorHandler = new ErrorHandler({
+  environment: 'production'
+});
+
+// Throw predefined errors
+throw new ValidationError('Invalid input');
+
+// Handle errors in Hono middleware
+app.onError((err, ctx) => {
+  errorHandler.handleError(err, ctx);
+});
+```
+
+**API:**
+- `formatError(error: Error): ErrorResponse` - Format error to standard response
+- `handleError(error: Error, ctx: HonoContext): void` - Handle and send error response
+- `middleware(): Function` - Get Hono middleware function
+
+**Predefined Error Classes:**
+- `ValidationError` (400)
+- `AuthenticationError` (401)
+- `AuthorizationError` (403)
+- `NotFoundError` (404)
+- `ConflictError` (409)
+- `RateLimitError` (429)
+- `InternalError` (500)
+
+#### LoggerSanitizer
+
+日志脱敏工具，防止日志注入攻击（SEC-007）。
+
+**Features:**
+- 日志注入防护（过滤换行符和控制字符）
+- 敏感信息自动过滤
+- 结构化日志格式化
+- 性能：<1ms（短文本）
+
+**Usage:**
+
+```typescript
+import { LoggerSanitizer } from 'prism-gateway/logging';
+
+const sanitizer = new LoggerSanitizer({
+  redactEmails: true,
+  redactIPs: true
+});
+
+// Sanitize log message
+const clean = sanitizer.sanitize('User input\nmalicious');
+
+// Format structured log with auto-sanitization
+const log = sanitizer.formatStructured({
+  level: 'info',
+  message: 'User logged in',
+  userId: '123',
+  password: 'secret123'  // Automatically redacted
+});
+```
+
+**API:**
+- `sanitize(input: string): string` - Sanitize log message
+- `formatStructured(data: Record<string, any>): string` - Format as JSON with sanitization
+
+**Performance:** <1ms for short text
+
+#### timingSafeEqual
+
+恒定时间比较工具，防止时序攻击（SEC-008）。
+
+**Features:**
+- 恒定时间比较，防止时序分析
+- 适用于密码、Token、签名比较
+- 性能：<0.1ms（短字符串）
+
+**Usage:**
+
+```typescript
+import { timingSafeEqual } from 'prism-gateway/crypto';
+
+// Safe password comparison
+const isValid = timingSafeEqual(storedHash, userInputHash);
+
+// Safe token comparison
+const isValidToken = timingSafeEqual(validToken, userToken);
+
+// Safe signature comparison
+const isValidSignature = timingSafeEqual(expectedSig, providedSig);
+```
+
+**API:**
+- `timingSafeEqual(a: string, b: string): boolean` - Constant-time string comparison
+- `timingSafeEqualBuffer(a: Buffer, b: Buffer): boolean` - Constant-time Buffer comparison
+- `timingSafeEqualArray(a: Uint8Array, b: Uint8Array): boolean` - Constant-time array comparison
+
+**Performance:** <0.1ms for short strings
+
 ### GatewayGuard
 
 The core violation checking engine with three layers:

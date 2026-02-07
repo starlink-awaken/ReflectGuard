@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PRISM-Gateway Quality Gate Configuration Schema",
+  "type": "object",
+  "required": ["version", "qualityStandards", "checkGroups", "gateRules"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "配置版本号",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "description": "配置描述"
+    },
+    "qualityStandards": {
+      "type": "object",
+      "description": "质量标准配置",
+      "properties": {
+        "coverage": {
+          "type": "object",
+          "description": "代码覆盖率标准",
+          "properties": {
+            "minimum": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "最低覆盖率百分比"
+            },
+            "threshold": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "覆盖率警戒线"
+            },
+            "blockOnDecrease": {
+              "type": "boolean",
+              "description": "覆盖率下降时阻断合并"
+            },
+            "excludedPaths": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "排除的文件路径"
+            }
+          }
+        },
+        "complexity": {
+          "type": "object",
+          "description": "代码复杂度标准",
+          "properties": {
+            "maximum": {
+              "type": "number",
+              "minimum": 1,
+              "description": "最大圈复杂度"
+            },
+            "blockOnExceed": {
+              "type": "boolean",
+              "description": "超过复杂度时阻断合并"
+            }
+          }
+        },
+        "security": {
+          "type": "object",
+          "description": "安全标准",
+          "properties": {
+            "blockOnCritical": {
+              "type": "boolean",
+              "description": "严重漏洞阻断合并"
+            },
+            "blockOnHigh": {
+              "type": "boolean",
+              "description": "高危漏洞阻断合并"
+            },
+            "allowMedium": {
+              "type": "boolean",
+              "description": "允许中危漏洞"
+            }
+          }
+        },
+        "tests": {
+          "type": "object",
+          "description": "测试标准",
+          "properties": {
+            "minimumPassRate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "最低测试通过率"
+            },
+            "blockOnFailure": {
+              "type": "boolean",
+              "description": "测试失败时阻断合并"
+            }
+          }
+        }
+      }
+    },
+    "checkGroups": {
+      "type": "object",
+      "description": "检查任务分组",
+      "properties": {
+        "fastChecks": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "timeout": { "type": "string" },
+            "jobs": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "fullChecks": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "timeout": { "type": "string" },
+            "jobs": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "gateRules": {
+      "type": "object",
+      "description": "门禁规则",
+      "properties": {
+        "allChecksMustPass": {
+          "type": "boolean",
+          "description": "所有检查必须通过"
+        },
+        "allowSkipWithLabel": {
+          "type": "boolean",
+          "description": "允许通过标签跳过检查"
+        },
+        "requiredApprovals": {
+          "type": "number",
+          "minimum": 0,
+          "description": "所需审批数量"
+        },
+        "blockOnConflicts": {
+          "type": "boolean",
+          "description": "有冲突时阻断合并"
+        }
+      }
+    },
+    "notifications": {
+      "type": "object",
+      "description": "通知配置",
+      "properties": {
+        "onPass": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "message": { "type": "string" }
+          }
+        },
+        "onFail": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "message": { "type": "string" },
+            "includeDetails": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "exemptions": {
+      "type": "object",
+      "description": "豁免配置",
+      "properties": {
+        "paths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "豁免的文件路径"
+        },
+        "labels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "豁免的标签"
+        },
+        "users": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "豁免的用户"
+        }
+      }
+    }
+  }
+}

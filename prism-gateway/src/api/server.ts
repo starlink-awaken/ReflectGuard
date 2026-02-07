@@ -10,6 +10,7 @@
  * - 全局错误处理
  * - 请求日志
  * - 健康检查端点
+ * - JWT 认证
  * - 优雅关闭
  *
  * @example
@@ -20,14 +21,19 @@
  * # 健康检查
  * curl http://localhost:3000/health
  *
- * # API 调用
- * curl http://localhost:3000/api/v1/analytics/usage?period=week
+ * # 登录获取 Token
+ * curl -X POST http://localhost:3000/api/v1/auth/login \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"username":"testuser","password":"password123"}'
+ *
+ * # 使用 Token 访问受保护的 API
+ * curl http://localhost:3000/api/v1/analytics/usage?period=week \
+ *   -H "Authorization: Bearer YOUR_TOKEN"
  * ```
  */
 
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
-import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
 
@@ -37,20 +43,41 @@ import { DIContainer } from './di.js';
 // 导入路由
 import analyticsRouter from './routes/analytics.js';
 
+// 导入认证模块
+import { JWTServiceWithKeyManagement, authRouter } from './auth/index.js';
+
+// 导入速率限制中间件（P0 安全修复）
+import {
+  createAuthLimiter,
+  createApiLimiter,
+  createPublicLimiter
+} from './middleware/rateLimitHono.js';
+
+// 导入安全 CORS 中间件（P0 安全修复 SEC-003）
+import { createCORSMiddleware } from './middleware/cors.js';
+
+// 导入 WebSocket 服务器（Task 64: WebSocket 实时通信）
+import { WebSocketServer } from './websocket/WebSocketServer.js';
+
+// 导入路径模块
+import { join } from 'path';
+
 // 创建主应用
 const app = new Hono();
+
+// WebSocket 服务器实例
+let wsServer: WebSocketServer | null = null;
 
 /**
  * 全局中间件配置
  */
 
-// 1. CORS 支持
-app.use('*', cors({
-  origin: '*', // 生产环境应该限制具体域名
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization'],
-  maxAge: 86400, // 24 hours
-}));
+// 1. 安全 CORS 支持（P0 修复：SEC-003）
+//    - 移除通配符 origin: '*'
+//    - 实现来源白名单验证
+//    - 减少预检缓存时间到 10 分钟
+//    - 支持环境变量 CORS_ALLOWED_ORIGINS 配置
+app.use('*', createCORSMiddleware());
 
 // 2. 请求日志
 app.use('*', logger());
@@ -85,33 +112,41 @@ app.get('/health', (c) => {
 });
 
 /**
- * 根路径
+ * UI 静态文件服务（Task 65: Web UI 基础框架）
  *
  * @description
- * API 信息端点
+ * 提供 Dashboard HTML 页面
  *
- * @returns {200} API 信息
+ * @returns {200} HTML 页面
  *
  * @example
  * ```bash
- * curl http://localhost:3000/
- * # {"name":"PRISM-Gateway API","version":"2.0.0",...}
+ * curl http://localhost:3000/ui/index.html
  * ```
  */
+app.get('/ui/*', async (c) => {
+  const filePath = c.req.path;
+  const fullPath = join(process.cwd(), 'src', 'ui', filePath.replace('/ui/', ''));
+
+  try {
+    const file = Bun.file(fullPath);
+    return new Response(file);
+  } catch (error) {
+    return c.json({
+      success: false,
+      error: 'File not found'
+    }, 404);
+  }
+});
+
+/**
+ * 根路径 - 重定向到 Dashboard
+ *
+ * @description
+ * 访问根路径时自动跳转到 Dashboard UI
+ */
 app.get('/', (c) => {
-  return c.json({
-    name: 'PRISM-Gateway API',
-    version: '2.0.0',
-    description: '统一的 7 维度复盘和 Gateway 系统',
-    endpoints: {
-      health: '/health',
-      api: '/api/v1',
-      analytics: '/api/v1/analytics',
-      docs: '/api/v1/docs'
-    },
-    documentation: 'https://github.com/danielmiessler/prism-gateway',
-    repository: 'https://github.com/danielmiessler/prism-gateway'
-  });
+  return c.redirect('/ui/index.html');
 });
 
 /**
@@ -119,10 +154,38 @@ app.get('/', (c) => {
  *
  * @description
  * 所有 v1 API 端点都挂载在 /api/v1 下
+ *
+ * @remarks
+ * P0 安全修复：启用速率限制中间件
+ * - 认证端点：10 次/15 分钟（防暴力破解）
+ * - API 端点：100 次/15 分钟（正常使用）
+ * - 公开端点：50 次/15 分钟（更严格）
  */
 
-// Analytics 路由
-app.route('/api/v1/analytics', analyticsRouter);
+// 认证路由（公开）+ 速率限制
+// 注意：认证路由必须在 JWT 服务初始化后注册
+// 使用 JWTServiceWithKeyManagement 支持密钥轮换（Task #14: 密钥管理服务集成）
+let jwtService: JWTServiceWithKeyManagement | null = null;
+
+// 创建认证限流器（10 次/15 分钟）
+const authLimiter = createAuthLimiter({
+  whitelist: process.env.RATE_LIMIT_WHITELIST
+    ? process.env.RATE_LIMIT_WHITELIST.split(',').map(ip => ip.trim())
+    : ['127.0.0.1', '::1'] // 默认本地地址白名单
+});
+
+// 创建 API 限流器（100 次/15 分钟）
+const apiLimiter = createApiLimiter({
+  whitelist: process.env.RATE_LIMIT_WHITELIST
+    ? process.env.RATE_LIMIT_WHITELIST.split(',').map(ip => ip.trim())
+    : ['127.0.0.1', '::1']
+});
+
+// Analytics 路由（带 API 限流）
+const analyticsApp = new Hono();
+analyticsApp.use('*', apiLimiter);
+analyticsApp.route('/', analyticsRouter);
+app.route('/api/v1/analytics', analyticsApp);
 
 /**
  * 404 处理
@@ -175,10 +238,73 @@ export async function startServer(
   // 初始化依赖注入容器
   DIContainer.initialize();
 
-  // 初始化 Analytics 路由
+  // 初始化 JWT 服务（使用支持密钥管理的版本）
+  jwtService = new JWTServiceWithKeyManagement({
+    secret: process.env.JWT_SECRET || 'dev-secret-key-at-least-32-characters-long-for-testing',
+    accessTokenTTL: parseInt(process.env.JWT_ACCESS_TTL || '3600'),
+    refreshTokenTTL: parseInt(process.env.JWT_REFRESH_TTL || '604800'),
+    issuer: process.env.JWT_ISSUER || 'prism-gateway',
+    audience: process.env.JWT_AUDIENCE || 'prism-gateway-api',
+    keyRotationDays: parseInt(process.env.JWT_KEY_ROTATION_DAYS || '30') // 密钥轮换周期（天）
+  });
+
+  // 注册认证路由（使用模拟用户服务 + 认证限流）
+  // 生产环境应使用真实的用户服务
+  const mockUserService = {
+    async findByUsername(username: string) {
+      // 开发环境的模拟用户
+      if (username === 'testuser') {
+        return {
+          id: 'user1',
+          passwordHash: 'hashed_password123'
+        };
+      }
+      return null;
+    },
+    async verifyPassword(password: string, hash: string) {
+      // 开发环境：简单验证（生产环境使用 bcrypt）
+      return hash === `hashed_${password}`;
+    }
+  };
+
+  // 创建认证路由子应用，应用限流中间件
+  const authApp = new Hono();
+  authApp.use('*', authLimiter);
+  authApp.route('/', authRouter({
+    jwtService,
+    userService: mockUserService
+  }));
+
+  app.route('/api/v1/auth', authApp);
+
+  // 初始化 WebSocket 服务器（Task 64: WebSocket 实时通信）
+  // 注意：必须在Analytics之前初始化，以便Analytics可以使用wsServer推送事件
+  wsServer = new WebSocketServer({
+    port: 3001, // WebSocket 使用独立端口
+    heartbeatInterval: 30000, // 30秒心跳
+    timeout: 60000, // 60秒超时
+    maxConnections: 100
+  });
+
+  await wsServer.start();
+
+  // 监听 WebSocket 事件，与 Analytics 集成
+  wsServer.on('connection', (conn) => {
+    console.log(`[WebSocket] 新连接: ${conn.id}`);
+  });
+
+  wsServer.on('disconnect', (conn) => {
+    console.log(`[WebSocket] 连接断开: ${conn.id}`);
+  });
+
+  // 初始化 Analytics 路由（Task 74: 传递wsServer用于事件推送）
   const analyticsService = DIContainer.getAnalyticsService();
   const { initAnalytics } = await import('./routes/analytics.js');
-  initAnalytics(analyticsService);
+  initAnalytics(analyticsService, wsServer);
+
+  // 导出wsServer实例供其他模块使用（Task 74: 实时事件推送）
+  // 注意：这里不能使用 export，因为是在函数内部
+  // 请通过 WebSocketServer 类直接获取实例
 
   const server = serve({
     fetch: app.fetch,
@@ -190,17 +316,44 @@ export async function startServer(
 ╔════════════════════════════════════════════════════════════╗
 ║          PRISM-Gateway REST API Server                   ║
 ╠════════════════════════════════════════════════════════════╣
-║  Version:     2.0.0                                       ║
+║  Version:     2.3.0                                       ║
 ║  Environment: ${process.env.NODE_ENV || 'development'.padEnd(20)}║
+╠════════════════════════════════════════════════════════════╣
+║  HTTP Server:                                             ║
 ║  URL:         http://${hostname}:${port}                   ║
 ║  Health:      http://${hostname}:${port}/health            ║
 ║  API:         http://${hostname}:${port}/api/v1            ║
+║  Dashboard:   http://${hostname}:${port}/ui/index.html     ║
+╠════════════════════════════════════════════════════════════╣
+║  WebSocket Server:                                        ║
+║  URL:         ws://${hostname}:3001/ws                     ║
+║  Status:      ✅ Running                                   ║
+╠════════════════════════════════════════════════════════════╣
+║  Authentication Endpoints:                               ║
+║  POST   /api/v1/auth/login     - User login               ║
+║  POST   /api/v1/auth/refresh   - Refresh access token     ║
+║  GET    /api/v1/auth/me        - Get current user         ║
+║  POST   /api/v1/auth/logout    - User logout              ║
+╠════════════════════════════════════════════════════════════╣
+║  Analytics Endpoints:                                   ║
+║  GET    /api/v1/analytics/usage      - Usage metrics       ║
+║  GET    /api/v1/analytics/quality    - Quality metrics     ║
+║  GET    /api/v1/analytics/dashboard  - Dashboard data      ║
+║  POST   /api/v1/analytics/records    - Create record       ║
+║  GET    /api/v1/analytics/records    - List records        ║
 ╚════════════════════════════════════════════════════════════╝
   `);
 
   // 优雅关闭
   const shutdown = async () => {
     console.log('\n🛑 正在关闭服务器...');
+
+    // 关闭 WebSocket 服务器
+    if (wsServer) {
+      console.log('  关闭 WebSocket 服务器...');
+      await wsServer.stop();
+    }
+
     DIContainer.dispose();
     server.close();
     console.log('✅ 服务器已关闭');

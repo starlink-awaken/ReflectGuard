@@ -32,3 +32,9 @@ level-2-warm/violations.jsonl
 # Logs
 *.log
 logs/
+
+# Test and debug files
+test-*.ts
+test-*.js
+debug_*.ts
+*.txt

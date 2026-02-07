@@ -9,6 +9,7 @@
  * - 日期格式转换
  * - 时间范围计算
  * - 时间戳比较
+ * - 时间戳规范化（统一 ISO 8601 格式）
  */
 
 /**
@@ -351,5 +352,90 @@ export class TimeUtils {
     result.setDate(0);
     result.setHours(23, 59, 59, 999);
     return result;
+  }
+
+  /**
+   * 规范化时间戳为 ISO 8601 格式
+   *
+   * @param timestamp - 时间戳（字符串或 Date）
+   * @returns ISO 8601 格式字符串
+   *
+   * @example
+   * ```typescript
+   * TimeUtils.normalizeTimestamp('2026-02-05'); // '2026-02-05T00:00:00.000Z'
+   * TimeUtils.normalizeTimestamp(new Date()); // ISO 字符串
+   * ```
+   */
+  static normalizeTimestamp(timestamp: string | Date): string {
+    const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
+    return date.toISOString();
+  }
+
+  /**
+   * 解析时间戳为 Date 对象（统一 UTC）
+   *
+   * @param timestamp - 时间戳字符串
+   * @returns UTC Date 对象
+   *
+   * @example
+   * ```typescript
+   * TimeUtils.parseTimestamp('2026-02-05T10:30:00Z'); // Date 对象
+   * ```
+   */
+  static parseTimestamp(timestamp: string): Date {
+    return new Date(timestamp);
+  }
+
+  /**
+   * 验证时间戳格式是否有效
+   *
+   * @param timestamp - 时间戳字符串
+   * @returns 是否有效
+   *
+   * @example
+   * ```typescript
+   * TimeUtils.isValidTimestamp('2026-02-05T10:30:00Z'); // true
+   * TimeUtils.isValidTimestamp('invalid'); // false
+   * ```
+   */
+  static isValidTimestamp(timestamp: string): boolean {
+    const date = new Date(timestamp);
+    return !isNaN(date.getTime());
+  }
+
+  /**
+   * 获取时间戳的开始和结束（用于查询范围）
+   *
+   * @param timestamp - 时间戳
+   * @returns 包含开始和结束时间的对象
+   *
+   * @example
+   * ```typescript
+   * TimeUtils.getTimestampBounds('2026-02-05');
+   * // { start: '2026-02-05T00:00:00.000Z', end: '2026-02-05T23:59:59.999Z' }
+   * ```
+   */
+  static getTimestampBounds(timestamp: string): { start: string; end: string } {
+    const date = new Date(timestamp);
+    return {
+      start: this.toISOString(this.startOfDay(date)),
+      end: this.toISOString(this.endOfDay(date))
+    };
+  }
+
+  /**
+   * 转换为 UTC 时区的日期
+   *
+   * @param date - 日期
+   * @returns UTC Date 对象
+   *
+   * @example
+   * ```typescript
+   * TimeUtils.toUTC('2026-02-05T10:30:00+08:00'); // UTC 时间
+   * ```
+   */
+  static toUTC(date: Date | string): Date {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return new Date(d.getTime() + d.getTimezoneOffset() * 60000);
   }
 }
